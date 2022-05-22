@@ -13,6 +13,12 @@ class TestSolution(unittest.TestCase):
         result = s.deleteAndEarn(p)
         self.assertEqual(3451, result)
 
+    def test_3(self):
+        s = Solution()
+        p = [1,6,3,3,8,4,8,10,1,3]
+        result = s.deleteAndEarn(p)
+        self.assertEqual(43, result)
+
 try:
     unittest.main()
 except SystemExit:
