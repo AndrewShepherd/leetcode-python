@@ -1,47 +1,35 @@
-class Solution(object):
+class Solution:
     def maxProduct(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: int
-        """
-        # Highest negative, highest positive
-        (bestValue, currentPositiveOnly, currentAbsolute) = (nums[0], nums[0], nums[0])
-        for n in nums[1:]:
-            if n > 0:
-                currentPositiveOnly = currentPositiveOnly * n if currentPositiveOnly else n
-                currentAbsolute = currentAbsolute * n if currentAbsolute else n
-            elif n < 0:
-                currentPositiveOnly = currentAbsolute * n if currentAbsolute < 0 else None
-                currentAbsolute = currentAbsolute * n if currentAbsolute else n
-            else:
-                currentPositiveOnly = 0
-                currentAbsolute = 0
-            comparisonRange = [bestValue]
-            if currentPositiveOnly != None:
-                comparisonRange.append(currentPositiveOnly)
-            if currentAbsolute:
-                comparisonRange.append(currentAbsolute)
-            bestValue = max(comparisonRange)
-
-        # And again, but backwards!
-        (currentPositiveOnly, currentAbsolute) = (nums[-1], nums[-1])
-        for n in nums[-2::-1]:
-            if n > 0:
-                currentPositiveOnly = currentPositiveOnly * n if currentPositiveOnly else n
-                currentAbsolute = currentAbsolute * n if currentAbsolute else n
-            elif n < 0:
-                currentPositiveOnly = currentAbsolute * n if currentAbsolute < 0 else None
-                currentAbsolute = currentAbsolute * n if currentAbsolute else n
-            else:
-                currentPositiveOnly = 0
-                currentAbsolute = 0
-            comparisonRange = [bestValue]
-            if currentPositiveOnly != None:
-                comparisonRange.append(currentPositiveOnly)
-            if currentAbsolute:
-                comparisonRange.append(currentAbsolute)
-            bestValue = max(comparisonRange)
-
-        return bestValue
-                
         
+        
+        min_product_end_at_i = nums[0]
+        max_product_end_at_i = nums[0]
+        
+        max_product_so_far = nums[0]
+        
+        for i in range(1,len(nums)):
+            
+            past_min_product_end_at_i, past_max_product_end_at_i =  min_product_end_at_i, max_product_end_at_i
+            
+            min_product_end_at_i = min(
+                nums[i],
+                past_min_product_end_at_i * nums[i],
+                past_max_product_end_at_i * nums[i]
+            )
+            
+            max_product_end_at_i = max(
+                nums[i],
+                past_min_product_end_at_i * nums[i],
+                past_max_product_end_at_i * nums[i]
+            )
+            
+            max_product_so_far = max(
+                max_product_so_far,
+                min_product_end_at_i,
+                max_product_end_at_i
+            )
+            
+            #print(min_product_end_at_i, max_product_end_at_i)
+        
+        
+        return max_product_so_far
