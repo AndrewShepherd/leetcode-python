@@ -4,17 +4,17 @@ def lis(values):
     # Start point, length
     if len(values) == 1:
         return 1
-    entries = [[values.pop(0), 1]]
+    entries = [values.pop(0)]
     
     for v in values:
-        if v < entries[0][0]:
-            entries[0][0] = v
-        elif v > entries[-1][0]:
-            entries.append([v, entries[-1][1] + 1])
+        if v <= entries[0]:
+            entries[0] = v
+        elif v > entries[-1]:
+            entries.append(v)
         else:
             for i in range(1, len(entries)):
-                if v > entries[i-1][0] and v <= entries[i][0]:
-                    entries[i] = [v, i+1]
+                if v > entries[i-1] and v <= entries[i]:
+                    entries[i] = v
                     break
     return len(entries) 
 
