@@ -10,9 +10,14 @@ It will automatically run the automated tests.
 The are three categories of difficulty in Leetcode. This list attempts to show questions in order of difficulty.
 (Some of these questions a trivial one-liners in Python but require significant knowledge in lower-level languages)
 
+- [Number of Steps to Reduce a Number to Zero](https://leetcode.com/problems/number-of-steps-to-reduce-a-number-to-zero/): Like the project Euler question 3 - just a while loop
+- [Count of Operations To Obtain Zero](https://leetcode.com/problems/count-operations-to-obtain-zero/): Similar to GCD problem
+
 Just going by the [array](https://leetcode.com/tag/array/) tag
 
 - [Concatenation of Array](https://leetcode.com/problems/concatenation-of-array/): A simple one liner
+- [Best Time to Buy and Sell Stock II](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii):m Not really a dynamic programming problem. You are simply adding all of the positive differences
 - [Shuffle the Array](https://leetcode.com/problems/shuffle-the-array/): Interpolate two arrays
 - [Kids with the Greatest Number of Candies](https://leetcode.com/problems/kids-with-the-greatest-number-of-candies/): Simple once you understand the problem. Involves the `max` function and converting a list into a list of bools
 - [Decompress Run-Length Encoded List](https://leetcode.com/problems/decompress-run-length-encoded-list/): Understanding the problem is hard until you read the example.
+

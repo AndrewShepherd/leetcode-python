@@ -10,8 +10,6 @@ class TestSolution(unittest.TestCase):
         result = s.maxEnvelopes(envelopes)
         self.assertEqual(result, exprectedResult)
 
-
-
     def test_3(self):
         self.run_test([[5,4],[6,4],[6,7],[2,3]], 3)
 
