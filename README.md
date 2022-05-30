@@ -21,3 +21,6 @@ Just going by the [array](https://leetcode.com/tag/array/) tag
 - [Kids with the Greatest Number of Candies](https://leetcode.com/problems/kids-with-the-greatest-number-of-candies/): Simple once you understand the problem. Involves the `max` function and converting a list into a list of bools
 - [Decompress Run-Length Encoded List](https://leetcode.com/problems/decompress-run-length-encoded-list/): Understanding the problem is hard until you read the example.
 
+### Use of Classes
+
+- [Range Sum Query - Immutable](https://leetcode.com/problems/range-sum-query-immutable/): Setting a value in the `__init__` method, then processing it
