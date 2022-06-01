@@ -26,6 +26,7 @@ Just going by the [array](https://leetcode.com/tag/array/) tag
 - [Shuffle the Array](https://leetcode.com/problems/shuffle-the-array/): Interpolate two arrays
 - [Kids with the Greatest Number of Candies](https://leetcode.com/problems/kids-with-the-greatest-number-of-candies/): Simple once you understand the problem. Involves the `max` function and converting a list into a list of bools
 - [Decompress Run-Length Encoded List](https://leetcode.com/problems/decompress-run-length-encoded-list/): Understanding the problem is hard until you read the example.
+- [Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/): In-placed rearranging of the elements in an array
 - [Move Zeros](https://leetcode.com/problems/move-zeroes/): In-place rearranging of the elements in an array
 
 ### Dictionaries / Hash Tables
