@@ -39,3 +39,8 @@ Just going by the [array](https://leetcode.com/tag/array/) tag
 ### Use of Classes
 
 - [Range Sum Query - Immutable](https://leetcode.com/problems/range-sum-query-immutable/): Setting a value in the `__init__` method, then querying it in a different method
+
+## Other Coding Sites
+
+- [HackerRank](https://www.hackerrank.com/)
+- [CodeWars](https://codewars.com/) - Harder questions than leetcode
