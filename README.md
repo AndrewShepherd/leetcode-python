@@ -21,11 +21,12 @@ The are three categories of difficulty in Leetcode. This list attempts to show q
 Just going by the [array](https://leetcode.com/tag/array/) tag
 
 - [Concatenation of Array](https://leetcode.com/problems/concatenation-of-array/): A simple one liner
+- [Sum of 1d Array](https://leetcode.com/problems/running-sum-of-1d-array): Creating a new array as an accumulation of an existing array
 - [Best Time to Buy and Sell Stock II](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii):m Not really a dynamic programming problem. You are simply adding all of the positive differences
 - [Shuffle the Array](https://leetcode.com/problems/shuffle-the-array/): Interpolate two arrays
 - [Kids with the Greatest Number of Candies](https://leetcode.com/problems/kids-with-the-greatest-number-of-candies/): Simple once you understand the problem. Involves the `max` function and converting a list into a list of bools
 - [Decompress Run-Length Encoded List](https://leetcode.com/problems/decompress-run-length-encoded-list/): Understanding the problem is hard until you read the example.
-- [Move Zeros](https://leetcode.com/problems/move-zeroes/): An example of sorting an array
+- [Move Zeros](https://leetcode.com/problems/move-zeroes/): An example ofin-place rearranging of the elements in an array
 
 ### Dictionaries / Hash Tables
 
