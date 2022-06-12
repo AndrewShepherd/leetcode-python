@@ -12,7 +12,7 @@ The are three categories of difficulty in Leetcode. This list attempts to show q
 
 ### Math Problems
 
-- [Power of Two](https://leetcode.com/problems/power-of-two):
+- [Power of Two](https://leetcode.com/problems/power-of-two): ANother integer division problem
 - [Power of Three](https://leetcode.com/problems/power-of-three/): Very simple example of integer division and modulus
 - [Ugly Number](https://leetcode.com/problems/ugly-number/): Simple example of integer division and modulus
 - [Number of Steps to Reduce a Number to Zero](https://leetcode.com/problems/number-of-steps-to-reduce-a-number-to-zero/): Like the project Euler question 3 - just a while loop
@@ -28,7 +28,8 @@ Just going by the [array](https://leetcode.com/tag/array/) tag
 - [Shuffle the Array](https://leetcode.com/problems/shuffle-the-array/): Interpolate two arrays
 - [Kids with the Greatest Number of Candies](https://leetcode.com/problems/kids-with-the-greatest-number-of-candies/): Simple once you understand the problem. Involves the `max` function and converting a list into a list of bools
 - [Decompress Run-Length Encoded List](https://leetcode.com/problems/decompress-run-length-encoded-list/): Understanding the problem is hard until you read the example.
-- [Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/): In-placed rearranging of the elements in an array
+- [Reverse String](https://leetcode.com/problems/reverse-string/): In-place rearranging (reversal) of an array
+- [Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/): In-place rearranging of the elements in an array
 - [Move Zeros](https://leetcode.com/problems/move-zeroes/): In-place rearranging of the elements in an array
 
 ### Dictionaries / Hash Tables
