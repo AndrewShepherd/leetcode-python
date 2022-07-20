@@ -14,6 +14,7 @@ The are three categories of difficulty in Leetcode. This list attempts to show q
 
 - [Power of Two](https://leetcode.com/problems/power-of-two): ANother integer division problem
 - [Power of Three](https://leetcode.com/problems/power-of-three/): Very simple example of integer division and modulus
+- [Power of Four](https://leetcode.com/problems/power-of-four/): Can be done cleger
 - [Ugly Number](https://leetcode.com/problems/ugly-number/): Simple example of integer division and modulus
 - [Number of Steps to Reduce a Number to Zero](https://leetcode.com/problems/number-of-steps-to-reduce-a-number-to-zero/): Like the project Euler question 3 - just a while loop
 - [Count of Operations To Obtain Zero](https://leetcode.com/problems/count-operations-to-obtain-zero/): Similar to GCD problem
