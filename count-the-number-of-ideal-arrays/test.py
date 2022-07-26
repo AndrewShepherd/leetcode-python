@@ -7,6 +7,16 @@ class TestSolution(unittest.TestCase):
         result = s.idealArrays(2, 5)
         self.assertEqual(10,result)
 
+    def test_7(self):
+        s = Solution()
+        result = s.idealArrays(10000, 10000)
+        self.assertEqual(22940607, result)
+
+    def test_1(self):
+        s = Solution()
+        result = s.idealArrays(1, 1)
+        self.assertEqual(1, result)
+
     def test_2(self):
         s = Solution()
         result = s.idealArrays(5, 3)
@@ -25,7 +35,7 @@ class TestSolution(unittest.TestCase):
     def test_6(self):
         s = Solution()
         result = s.idealArrays(9767, 9557)
-        self.assertEqual(465040898,result)
+        self.assertEqual(1998089,result)
 try:
     unittest.main()
 except SystemExit:
