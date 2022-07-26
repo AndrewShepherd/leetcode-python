@@ -45,14 +45,34 @@ def gcd(smaller, larger):
         return smaller
     return gcd(larger % smaller, smaller)
 
+def subtractRange(r:range, s:range):
+    if s.start <= r.start:
+        start = s.stop
+    else:
+        start = r.start
+    if r.stop <= s.stop:
+        stop = s.start
+    else:
+        stop = r.stop
+    return range(start, stop)
+
+def removeRangeOverlaps(r1:range, r2:range):
+    if r1.start >= r2.stop:
+        return r1, r2
+    if r2.start >= r1.stop:
+        return r1, r2
+    overlap = range(max(r1.start, r2.start), min(r1.stop, r2.stop))
+    return subtractRange(r1, overlap), subtractRange(r2, overlap)
+    
 # I have a stack of n cards, I can choose k of them
 @cache
 def nChooseK(n, k):
     # (n!)/(n-k)!(k)!
-    multipliers = list(range(n, max(n-k, 0), -1))
-    divisors = list(range(k, 0, -1))
-    if (len(multipliers) != len(divisors)):
-        raise Exception("WRONG!!")
+
+    multipliers = range(max(n-k+1, 1), n+1)
+    divisors = range(1, k+1)
+
+    multipliers, divisors = removeRangeOverlaps(multipliers, divisors)
     numerator = 1
     denominator = 1
     for n, d in zip(multipliers, divisors):
@@ -140,17 +160,18 @@ def enumerateSubPatterns(pattern):
 
 def generatePatternCalculator(pattern, patternIndexes, patternCalculators):
     if pattern == tuple():
-        return lambda required_length, previousCalculations : 1
+        return lambda required_length : 1
     subPatterns = Counter([tuple(sorted(p)) for p in enumerateSubPatterns(pattern)])
     indexesAndMultipliers = [(patternIndexes[subPattern], subPatterns[subPattern]) for subPattern in subPatterns.keys()]
-    def calculate(required_length, previousCalculations):
-        slowResult = sum([previousCalculations[i] * m for i,m in indexesAndMultipliers]) % modulus
-        if len(pattern) == 1:
-            if (required_length == 47 and pattern[0]==8):
-                dummy = 3
-            fastResult = calculateWithOnePrimeFactor(pattern[0]+1)(required_length) % modulus
-            if (slowResult != fastResult):
-                raise Exception("WRONG")
+    
+    if len(pattern) == 1:
+        return calculateWithOnePrimeFactor(pattern[0]+1)
+
+    @cache
+    def calculate(required_length):
+        if required_length == 1:
+            return 1
+        slowResult = sum([patternCalculators[i](required_length-1) * m for i,m in indexesAndMultipliers]) % modulus
         return slowResult
     return calculate
 
@@ -168,11 +189,7 @@ class Solution:
             patternCalculators[i] = generatePatternCalculator(v, patternIndexes, patternCalculators)
             finalMultipliers[i] = patternCounts[v]
 
-        dp = [1] * len(patterns)
-        for _ in range(1, n):
-            required_length = _ + 1
-            dp2 = [c(required_length, dp) for c in patternCalculators]
-            dp = dp2
+        dp = [c(n) for c in patternCalculators]
 
         finalSum = 0
         for z in zip(dp, finalMultipliers):
