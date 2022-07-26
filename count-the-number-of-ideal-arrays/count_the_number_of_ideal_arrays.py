@@ -167,6 +167,9 @@ def generatePatternCalculator(pattern, patternIndexes, patternCalculators):
     if len(pattern) == 1:
         return calculateWithOnePrimeFactor(pattern[0]+1)
 
+    if len(pattern) == 2 and pattern[0] == 1:
+        return calculateWithTwoPrimeFactorsOneToThePowerOfOne(pattern[1])
+
     @cache
     def calculate(required_length):
         if required_length == 1:
