@@ -104,7 +104,10 @@ def calculateWithOnePrimeFactor(sequence_length):
 
 def calculateWithTwoPrimeFactorsOneToThePowerOfOne(theOtherPower):
     sequence_length = theOtherPower + 2
-    return lambda k: (sequence_length - 1) * calculate_count(k-1, sequence_length) - (sequence_length-2) * calculate_count(k-1, sequence_length - 1)
+    @cache
+    def calculate(k):
+        return (sequence_length - 1) * calculate_count(k-1, sequence_length) - (sequence_length-2) * calculate_count(k-1, sequence_length - 1)
+    return calculate
 
 def calculateFor6(k):
     return calculateWithTwoPrimeFactorsOneToThePowerOfOne(1)
@@ -154,28 +157,32 @@ def enumerateSubPatterns(pattern):
         yield pattern
     else:
         yield from enumerateSubPatterns(pattern[1:])
-        for i in range(1, pattern[0]+1):
+        for i in range(1, pattern[0] + 1):
             for subPattern in enumerateSubPatterns(pattern[1:]):
                 yield (i,) + subPattern
 
 def generatePatternCalculator(pattern, patternIndexes, patternCalculators):
     if pattern == tuple():
         return lambda required_length : 1
-    subPatterns = Counter([tuple(sorted(p)) for p in enumerateSubPatterns(pattern)])
-    indexesAndMultipliers = [(patternIndexes[subPattern], subPatterns[subPattern]) for subPattern in subPatterns.keys()]
-    
     if len(pattern) == 1:
         return calculateWithOnePrimeFactor(pattern[0]+1)
 
     if len(pattern) == 2 and pattern[0] == 1:
         return calculateWithTwoPrimeFactorsOneToThePowerOfOne(pattern[1])
 
+    subPatterns = Counter([tuple(sorted(p)) for p in enumerateSubPatterns(pattern) if p != pattern])
+    indexesAndMultipliers = [(patternIndexes[subPattern], subPatterns[subPattern]) for subPattern in subPatterns.keys()]
+
+
     @cache
     def calculate(required_length):
         if required_length == 1:
             return 1
-        slowResult = sum([patternCalculators[i](required_length-1) * m for i,m in indexesAndMultipliers]) % modulus
-        return slowResult
+        s = 1
+        for subLength in range(1, required_length):
+            s += sum([patternCalculators[i](subLength) * m for i,m in indexesAndMultipliers]) % modulus
+            s %= modulus
+        return s
     return calculate
 
 class Solution:
