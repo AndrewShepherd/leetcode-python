@@ -173,16 +173,29 @@ def generatePatternCalculator(pattern, patternIndexes, patternCalculators):
     subPatterns = Counter([tuple(sorted(p)) for p in enumerateSubPatterns(pattern) if p != pattern])
     indexesAndMultipliers = [(patternIndexes[subPattern], subPatterns[subPattern]) for subPattern in subPatterns.keys()]
 
+    dp = [1]
 
-    @cache
+    #@cache
     def calculate(required_length):
-        if required_length == 1:
+        if required_length <= 1:
             return 1
-        s = 1
-        for subLength in range(1, required_length):
-            s += sum([patternCalculators[i](subLength) * m for i,m in indexesAndMultipliers]) % modulus
-            s %= modulus
-        return s
+        nonlocal dp
+        if required_length < len(dp):
+            return dp[required_length - 1]
+
+        alreadyDone = len(dp)
+        dp = dp + [None]*(required_length - alreadyDone)
+        if len(dp) < required_length:
+            raise Exception("Wrong")
+
+#dp2[index] = sum([dp[f] for f in factorLookup[index]]) % modulus
+        for k in range(alreadyDone+1, len(dp)+1):
+            s = dp[k-2]
+            s += sum([patternCalculators[i](k-1) * m for i,m in indexesAndMultipliers]) % modulus
+            dp[k-1] = s % modulus
+        if len(dp) < required_length:
+            raise Exception("Wrong")
+        return dp[required_length - 1]
     return calculate
 
 class Solution:
@@ -219,16 +232,6 @@ class Solution:
                 calculators[p2] = calculateWithOnePrimeFactor(exponent + 1)
                 p2 *= p
                 exponent += 1
-        if len(calculators) > 6:
-            calculators[6] = calculateWithTwoPrimeFactorsOneToThePowerOfOne(1)
-        if len(calculators) > 12:
-            calculators[12] = calculateWithTwoPrimeFactorsOneToThePowerOfOne(2)
-        if len(calculators) > 18:
-            calculators[18] = calculateWithTwoPrimeFactorsOneToThePowerOfOne(2) # 3^2 * 2^1
-        if len(calculators) > 24:
-            calculators[24] = calculateWithTwoPrimeFactorsOneToThePowerOfOne(3)
-        if len(calculators) > 48:
-            calculators[48] = calculateWithTwoPrimeFactorsOneToThePowerOfOne(4)
         dp = [0] + [1] * maxValue
         for _ in range(1, n):
             dp2 = dp[:]
