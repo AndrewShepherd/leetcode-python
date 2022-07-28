@@ -98,9 +98,9 @@ def cacheResult(l):
 
 # Sequence length is the number of distinct numbers
 # eg [1 2 4 8 16 32]  has a sequence length of 6
-def calculateWithOnePrimeFactor(sequence_length):
+def calculateWithOnePrimeFactor(exponent):
     # k is the required length of the ideal array
-    return lambda k:calculate_count(k-1, sequence_length)
+    return lambda k:calculate_count(k-1, exponent + 1)
 
 def calculateWithTwoPrimeFactorsOneToThePowerOfOne(theOtherPower):
     sequence_length = theOtherPower + 2
@@ -161,14 +161,23 @@ def enumerateSubPatterns(pattern):
             for subPattern in enumerateSubPatterns(pattern[1:]):
                 yield (i,) + subPattern
 
+
+
 def generatePatternCalculator(pattern, patternIndexes, patternCalculators):
     if pattern == tuple():
         return lambda required_length : 1
     if len(pattern) == 1:
-        return calculateWithOnePrimeFactor(pattern[0]+1)
+        return calculateWithOnePrimeFactor(pattern[0])
 
     if len(pattern) == 2 and pattern[0] == 1:
         return calculateWithTwoPrimeFactorsOneToThePowerOfOne(pattern[1])
+
+    # Trying to find a rule here
+    if pattern == (1, 1, 1):
+        @cache
+        def f(k: int):
+            return 6*calculate_count(k-1,4) - 6*calculate_count(k-1,3) + calculate_count(k-1,2)
+        return f
 
     subPatterns = Counter([tuple(sorted(p)) for p in enumerateSubPatterns(pattern) if p != pattern])
     indexesAndMultipliers = [(patternIndexes[subPattern], subPatterns[subPattern]) for subPattern in subPatterns.keys()]
@@ -182,19 +191,12 @@ def generatePatternCalculator(pattern, patternIndexes, patternCalculators):
         nonlocal dp
         if required_length < len(dp):
             return dp[required_length - 1]
-
         alreadyDone = len(dp)
         dp = dp + [None]*(required_length - alreadyDone)
-        if len(dp) < required_length:
-            raise Exception("Wrong")
-
-#dp2[index] = sum([dp[f] for f in factorLookup[index]]) % modulus
         for k in range(alreadyDone+1, len(dp)+1):
             s = dp[k-2]
             s += sum([patternCalculators[i](k-1) * m for i,m in indexesAndMultipliers]) % modulus
             dp[k-1] = s % modulus
-        if len(dp) < required_length:
-            raise Exception("Wrong")
         return dp[required_length - 1]
     return calculate
 
@@ -218,33 +220,3 @@ class Solution:
         for z in zip(dp, finalMultipliers):
             finalSum += (z[0] * z[1]) % modulus
         return finalSum % modulus
-        
-
-        
-        factorLookup = createFactorLookups(maxValue)
-
-        calculators = [None] * (maxValue + 1)
-        calculators[1] = lambda n:1
-        for p in getPrimes(maxValue):
-            exponent = 1
-            p2 = p
-            while p2 < len(calculators):
-                calculators[p2] = calculateWithOnePrimeFactor(exponent + 1)
-                p2 *= p
-                exponent += 1
-        dp = [0] + [1] * maxValue
-        for _ in range(1, n):
-            dp2 = dp[:]
-            dp3 = [None] * len(dp)
-            requiredLength = _ + 1
-            
-            for index in range(1, len(dp2)):
-                dp2[index] = sum([dp[f] for f in factorLookup[index]]) % modulus
-                if calculators[index]:
-                    dp3[index] = calculators[index](requiredLength) % modulus
-                if (dp3[index] != None) and (dp3[index] != dp2[index]):
-                    requiredResult = dp2[index]
-                    newResult = calculators[index](requiredLength)
-                    raise Exception(f"Failed at index {index}. Required {requiredResult} but got {newResult}")
-            dp = dp2
-        return sum(dp) % modulus
