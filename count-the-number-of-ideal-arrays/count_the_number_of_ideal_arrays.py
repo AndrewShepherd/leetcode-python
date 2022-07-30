@@ -1,5 +1,6 @@
 from collections import defaultdict, Counter
 from functools import cache
+import math
 
 modulus = 1000000007
 
@@ -166,6 +167,20 @@ def enumerateSubPatterns(pattern):
 def generatePatternCalculator(pattern, patternIndexes, patternCalculators):
     if pattern == tuple():
         return lambda required_length : 1
+
+    def formulaIDoNotUnderstand(required_length):
+        cur = 1
+        for ct in pattern:
+            v = required_length
+            # there are (n + 1) choose k ways to add k prime factors
+            for add in range(1, ct):
+                v *= (required_length + add)
+                v //= (add + 1)
+            
+            cur = (cur * v) % modulus
+        return cur
+    return formulaIDoNotUnderstand
+
     if len(pattern) == 1:
         return calculateWithOnePrimeFactor(pattern[0])
 
@@ -178,6 +193,11 @@ def generatePatternCalculator(pattern, patternIndexes, patternCalculators):
         def f(k: int):
             return 6*calculate_count(k-1,4) - 6*calculate_count(k-1,3) + calculate_count(k-1,2)
         return f
+
+    if pattern == (1, 1, 1, 1):
+        distinctPatterns = 4 * 3 * 2 * 1
+        introPatterns = 1
+        introduceOne = nChooseK(4, 4) + nChooseK(4, 3) + nChooseK(4, 2) + nChooseK(4, 1)
 
     subPatterns = Counter([tuple(sorted(p)) for p in enumerateSubPatterns(pattern) if p != pattern])
     indexesAndMultipliers = [(patternIndexes[subPattern], subPatterns[subPattern]) for subPattern in subPatterns.keys()]

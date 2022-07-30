@@ -1,4 +1,5 @@
 from count_the_number_of_ideal_arrays import Solution
+from grawlixes import GrawlixSolution
 import unittest
 
 class TestSolution(unittest.TestCase):
@@ -27,6 +28,11 @@ class TestSolution(unittest.TestCase):
         result = s.idealArrays(184, 389)
         self.assertEqual(510488787,result)
 
+    def test_3_grawlix(self):
+        s = GrawlixSolution()
+        result = s.idealArrays(184, 389)
+        self.assertEqual(510488787,result)
+        
     def test_5(self):
         s = Solution()
         result = s.idealArrays(5878, 2900)
