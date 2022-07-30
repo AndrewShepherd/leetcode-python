@@ -4,21 +4,6 @@ import math
 
 modulus = 1000000007
 
-def partitionCount(bagsToChooseFrom, requiredLength):
-    if requiredLength == 0:
-        return 1
-    if requiredLength == 1:
-        return bagsToChooseFrom
-    if requiredLength == 2:
-        return bagsToChooseFrom + (bagsToChooseFrom * (bagsToChooseFrom - 1)) // 2
-    if bagsToChooseFrom == 1:
-        return 1
-    elif bagsToChooseFrom == 2:
-        return requiredLength + 1
-    else:
-        return  partitionCount(bagsToChooseFrom, requiredLength - 1) + partitionCount(bagsToChooseFrom - 1, requiredLength)
-
-
 def createFactorLookups(maxValue):
     result = [[1] for _ in range(maxValue+1)]
     for i in range(2, maxValue+1):
@@ -69,7 +54,6 @@ def removeRangeOverlaps(r1:range, r2:range):
 @cache
 def nChooseK(n, k):
     # (n!)/(n-k)!(k)!
-
     multipliers = range(max(n-k+1, 1), n+1)
     divisors = range(1, k+1)
 
@@ -83,48 +67,6 @@ def nChooseK(n, k):
         numerator //= g
         denominator //= g
     return numerator // denominator
-
-@cache
-def calculate_count(requiredLength, availableNumbers):
-    return nChooseK(requiredLength + availableNumbers - 1, requiredLength)
-
-def cacheResult(l):
-    lookup = dict()
-    def calculateUsingCache(n):
-        if n not in lookup:
-            lookup[n] = l(n)
-        return lookup[n]
-    return calculateUsingCache
-
-
-# Sequence length is the number of distinct numbers
-# eg [1 2 4 8 16 32]  has a sequence length of 6
-def calculateWithOnePrimeFactor(exponent):
-    # k is the required length of the ideal array
-    return lambda k:calculate_count(k-1, exponent + 1)
-
-def calculateWithTwoPrimeFactorsOneToThePowerOfOne(theOtherPower):
-    sequence_length = theOtherPower + 2
-    @cache
-    def calculate(k):
-        return (sequence_length - 1) * calculate_count(k-1, sequence_length) - (sequence_length-2) * calculate_count(k-1, sequence_length - 1)
-    return calculate
-
-def calculateFor6(k):
-    return calculateWithTwoPrimeFactorsOneToThePowerOfOne(1)
-    #return 2 * calculate_count(k-1, 3) - calculate_count(k-1, 2)
-
-# 2^2 * 3^1
-def calculateFor12(k):
-    return 3 * calculate_count(k-1, 4) -  2 * calculate_count(k-1, 3)
-
-# 2^3 * 3^1
-def calculateFor24(k):
-    return 4 * calculate_count(k-1, 5) - 3 * calculate_count(k-1, 4)
-
-# 2^4 * 3^1
-def calculateFor48(k):
-    return 5 * calculate_count(k-1, 6) - 4 * calculate_count(k-1, 5)
 
 def enumerateAllPatterns(primes, upToPrimeIndex, numberRemaining):
     if upToPrimeIndex > 0:
@@ -151,8 +93,6 @@ def generatePatternCounts(maxValue):
     return d
 
 
-testPatternCounts = generatePatternCounts(10000)
-
 def enumerateSubPatterns(pattern):
     if not pattern:
         yield pattern
@@ -162,81 +102,15 @@ def enumerateSubPatterns(pattern):
             for subPattern in enumerateSubPatterns(pattern[1:]):
                 yield (i,) + subPattern
 
+def performTheCalculation(pattern, required_length):
+    return math.prod(nChooseK(required_length + ct - 1, ct) for ct in pattern)
 
-
-def generatePatternCalculator(pattern, patternIndexes, patternCalculators):
-    if pattern == tuple():
-        return lambda required_length : 1
-
-    def formulaIDoNotUnderstand(required_length):
-        cur = 1
-        for ct in pattern:
-            v = required_length
-            # there are (n + 1) choose k ways to add k prime factors
-            for add in range(1, ct):
-                v *= (required_length + add)
-                v //= (add + 1)
-            
-            cur = (cur * v) % modulus
-        return cur
-    return formulaIDoNotUnderstand
-
-    if len(pattern) == 1:
-        return calculateWithOnePrimeFactor(pattern[0])
-
-    if len(pattern) == 2 and pattern[0] == 1:
-        return calculateWithTwoPrimeFactorsOneToThePowerOfOne(pattern[1])
-
-    # Trying to find a rule here
-    if pattern == (1, 1, 1):
-        @cache
-        def f(k: int):
-            return 6*calculate_count(k-1,4) - 6*calculate_count(k-1,3) + calculate_count(k-1,2)
-        return f
-
-    if pattern == (1, 1, 1, 1):
-        distinctPatterns = 4 * 3 * 2 * 1
-        introPatterns = 1
-        introduceOne = nChooseK(4, 4) + nChooseK(4, 3) + nChooseK(4, 2) + nChooseK(4, 1)
-
-    subPatterns = Counter([tuple(sorted(p)) for p in enumerateSubPatterns(pattern) if p != pattern])
-    indexesAndMultipliers = [(patternIndexes[subPattern], subPatterns[subPattern]) for subPattern in subPatterns.keys()]
-
-    dp = [1]
-
-    #@cache
-    def calculate(required_length):
-        if required_length <= 1:
-            return 1
-        nonlocal dp
-        if required_length < len(dp):
-            return dp[required_length - 1]
-        alreadyDone = len(dp)
-        dp = dp + [None]*(required_length - alreadyDone)
-        for k in range(alreadyDone+1, len(dp)+1):
-            s = dp[k-2]
-            s += sum([patternCalculators[i](k-1) * m for i,m in indexesAndMultipliers]) % modulus
-            dp[k-1] = s % modulus
-        return dp[required_length - 1]
-    return calculate
 
 class Solution:
     def idealArrays(self, n: int, maxValue: int) -> int:
         patternCounts = generatePatternCounts(maxValue)
-        patterns = patternCounts.keys()
-        patternIndexes = dict()
-        for i, v in enumerate(patterns):
-            patternIndexes[v] = i
-
-        patternCalculators = [None] * len(patterns)
-        finalMultipliers = [0] * len(patterns)
-        for i, v in enumerate(patterns):
-            patternCalculators[i] = generatePatternCalculator(v, patternIndexes, patternCalculators)
-            finalMultipliers[i] = patternCounts[v]
-
-        dp = [c(n) for c in patternCalculators]
-
         finalSum = 0
-        for z in zip(dp, finalMultipliers):
-            finalSum += (z[0] * z[1]) % modulus
-        return finalSum % modulus
+        for pattern, count in patternCounts.items():
+            finalSum = (finalSum + performTheCalculation(pattern, n) * count) % modulus
+        return finalSum
+
