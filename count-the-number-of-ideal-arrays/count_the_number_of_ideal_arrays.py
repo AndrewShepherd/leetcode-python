@@ -2,35 +2,13 @@ from collections import defaultdict, Counter
 from functools import cache
 import math
 
+# See https://leetcode.com/submissions/detail/760266018/
+
 modulus = 1000000007
 
-def createFactorLookups(maxValue):
-    result = [[1] for _ in range(maxValue+1)]
-    for i in range(2, maxValue+1):
-        for j in range(i, maxValue+1, i):
-            result[j].append(i)
-    return result
-
-def getPrimes(maxValue):
-    sieve = [False] * (maxValue + 1)
-    for i in range(2, len(sieve)):
-        if not(sieve[i]):
-            yield i
-        for j in range(i+i, len(sieve), i):
-            sieve[j] = True
-
-
-def gcd(smaller, larger):
-    if smaller > larger:
-        smaller, larger = larger, smaller
-    if smaller == 1:
-        return 1
-    if smaller == 0:
-        return larger
-    if smaller == larger:
-        return smaller
-    return gcd(larger % smaller, smaller)
-
+######################################
+# This section is about implementing
+# nChooseK
 def subtractRange(r:range, s:range):
     if s.start <= r.start:
         start = s.stop
@@ -58,15 +36,19 @@ def nChooseK(n, k):
     divisors = range(1, k+1)
 
     multipliers, divisors = removeRangeOverlaps(multipliers, divisors)
-    numerator = 1
-    denominator = 1
-    for n, d in zip(multipliers, divisors):
-        numerator *= n
-        denominator *= d
-        g = gcd(numerator, denominator)
-        numerator //= g
-        denominator //= g
-    return numerator // denominator
+    return math.prod(multipliers)//math.prod(divisors)
+
+
+###########################################################
+# These three methods are about generating the patterns
+#
+def getPrimes(maxValue):
+    sieve = [False] * (maxValue + 1)
+    for i in range(2, len(sieve)):
+        if not(sieve[i]):
+            yield i
+        for j in range(i+i, len(sieve), i):
+            sieve[j] = True
 
 def enumerateAllPatterns(primes, upToPrimeIndex, numberRemaining):
     if upToPrimeIndex > 0:
@@ -93,18 +75,8 @@ def generatePatternCounts(maxValue):
     return d
 
 
-def enumerateSubPatterns(pattern):
-    if not pattern:
-        yield pattern
-    else:
-        yield from enumerateSubPatterns(pattern[1:])
-        for i in range(1, pattern[0] + 1):
-            for subPattern in enumerateSubPatterns(pattern[1:]):
-                yield (i,) + subPattern
-
 def performTheCalculation(pattern, required_length):
     return math.prod(nChooseK(required_length + ct - 1, ct) for ct in pattern)
-
 
 class Solution:
     def idealArrays(self, n: int, maxValue: int) -> int:
