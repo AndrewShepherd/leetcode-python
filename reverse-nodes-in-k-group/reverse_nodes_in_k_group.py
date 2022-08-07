@@ -10,42 +10,32 @@ class ListNode:
         self.val = val
         self.next = next
 
-##################
-#
-#  
-
 def reverseK(head: ListNode, k):
-    newHead = head.next
-    head.next = newHead.next
-    newHead.next = head
-
-    first = newHead
-    for _ in range(k-2):
+    first = head
+    for _ in range(k-1):
         nodeToMoveToFront = head.next
-        newLast = nodeToMoveToFront.next
-        head.next = newLast
+        head.next = nodeToMoveToFront.next
         nodeToMoveToFront.next = first
         first = nodeToMoveToFront
-
     return first, head
         
-    
+def countList(head: ListNode):
+    c = 0
+    n = head
+    while(n):
+        c += 1
+        n = n.next
+    return c
 
 class Solution:
     def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
         if k < 2:
             return head
-        # first count them
-        c = 0
-        n = head
-        while(n):
-            c += 1
-            n = n.next
+
+        c = countList(head)
         if c < k:
             return head
         head, last = reverseK(head, k)
-        _ = k
-        while _+k < c+1:
+        for _ in range(k, c-k+1, k):
             last.next, last = reverseK(last.next, k)
-            _ += k
         return head
