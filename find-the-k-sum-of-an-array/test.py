@@ -1,7 +1,6 @@
 import unittest
-
-
 from find_the_k_sum_of_an_array import Solution
+from large_test_case import big_list
 
 class TestSolution(unittest.TestCase):
 
@@ -19,6 +18,11 @@ class TestSolution(unittest.TestCase):
         s = Solution()
         result = s.kSum([1000,1001,1002,1003,1004,1005,1006,1007,1008,1009], 10)
         self.assertEqual(9037, result)
+
+    def test_4(self):
+        s = Solution()
+        result = s.kSum(big_list, 250)
+        self.assertEqual(1167523899761, result)
 
 
 
