@@ -28,6 +28,11 @@ class TestSolution(unittest.TestCase):
         result = s.movesToStamp("voy", "vvyyvoyvvoyoyoy")
         self.assertEqual([], result)
 
+    def test_6(self):
+        s = Solution()
+        result = s.movesToStamp("qxq", "qxqxqxqqxqxqqxqxqxqqxqxqqqxqqxqqqxqqxxqxqqxqqqxqqq")
+        self.assertEqual([], result)
+
 
 
 try:
