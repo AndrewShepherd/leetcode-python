@@ -11,6 +11,6 @@ class Solution:
                     travelM = sum(travel[j] for j in range(i))
                 if c == 'P' and not travelP:
                     travelP = sum(travel[j] for j in range(i))
-                if c == 'G' and not travelG:
+                if c == 'G'      and not travelG:
                     travelG = sum(travel[j] for j in range(i))
         return collect + travelM + travelP + travelG
