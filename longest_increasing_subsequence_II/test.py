@@ -39,7 +39,7 @@ class TestSolution(unittest.TestCase):
     def test_4(self):
         self.run_test(
             large_test_case_II.nums, large_test_case_II.k,
-            None
+            613
         )
 try:
     unittest.main()
