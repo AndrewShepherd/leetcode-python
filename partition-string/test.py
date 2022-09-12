@@ -16,14 +16,14 @@ class TestSolution(unittest.TestCase):
             4
         )
 
-    def test_0(self):
+    def test_2(self):
         self.run_test(
            "ssssss",
             6,
         )
 
     
-    def test_2(self):
+    def test_0(self):
         self.run_test(
            "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz",
             4,
