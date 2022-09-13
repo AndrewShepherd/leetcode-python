@@ -12,10 +12,10 @@ class SegmentLeafNode:
         else:
             return 0
 
-    def set(self, slot, value):
+    def update_max_value(self, slot, value):
         if self.slot != slot:
             raise Exception("Wrong slot, dumbass")
-        self.value = value
+        self.value = max(self.value, value)
         return self.value
 
 class SegmentTreeNode:
@@ -62,9 +62,9 @@ class SegmentTreeNode:
                 self.right = self.create_node(right_start, right_end_exclusive)
             return self.right
 
-    def set(self, slot, value):
+    def update_max_value(self, slot, value):
         node = self.getOrCreateChildNode(slot)
-        child_max = node.set(slot, value)
+        child_max = node.update_max_value(slot, value)
         self.cached_max = max(child_max, self.cached_max)
         return self.cached_max
 
@@ -76,8 +76,6 @@ class Solution:
         max_value = 0
         l = []
         for n in nums:
-            max_smaller = rootNode.max_value(n-k, n)
-            current_value = rootNode.max_value(n, n+1)
-            if current_value < max_smaller + 1:
-                max_value = rootNode.set(n, max_smaller + 1)
+            max_smaller = rootNode.max_value(max(n-k, 0), n)
+            max_value = rootNode.update_max_value(n, max_smaller+1)
         return max_value
