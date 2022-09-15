@@ -1,6 +1,7 @@
 import unittest
 from large_test_case import large_array
 import large_test_case_II
+import large_test_case_III
 
 
 from longest_increasing_subsequence_II import Solution
@@ -18,13 +19,13 @@ class TestSolution(unittest.TestCase):
             5
         )
 
-    def test_0(self):
+    def test_2(self):
         self.run_test(
            [7,4,5,1,8,12,4,7],5,
             4,
         )
 
-    def test_2(self):
+    def test_0(self):
         self.run_test(
             large_array, 1,
             100000
@@ -40,6 +41,12 @@ class TestSolution(unittest.TestCase):
         self.run_test(
             large_test_case_II.nums, large_test_case_II.k,
             613
+        )
+
+    def test_5(self):
+        self.run_test(
+            large_test_case_III.nums, 50000,
+            50000
         )
 try:
     unittest.main()

@@ -1,81 +1,35 @@
 import math
-from telnetlib import SE
 
-class SegmentLeafNode:
-    def __init__(self, slot):
-        self.slot = slot
-        self.value = 0
-
-    def max_value(self, start, end_exclusive):
-        if start <= self.slot < end_exclusive:
-            return self.value
-        else:
-            return 0
-
-    def update_max_value(self, slot, value):
-        if self.slot != slot:
-            raise Exception("Wrong slot, dumbass")
-        self.value = max(self.value, value)
-        return self.value
-
-class SegmentTreeNode:
-
-    def get_child_node_ranges(self):
-        midPoint = (self.range_end_exclusive +self.range_start) // 2
-        return (self.range_start, midPoint), (midPoint, self.range_end_exclusive)
-
-    def create_node(self, range_start, range_end_exclusive):
-        if (range_end_exclusive - range_start) == 1:
-            return SegmentLeafNode(range_start)
-        else:
-            return SegmentTreeNode(range_start, range_end_exclusive)
-
-    def __init__(self, range_start, range_end_exclusive):
-        self.range_start = range_start
-        self.range_end_exclusive = range_end_exclusive
-        self.cached_max = 0
-        self.left = None
-        self.right = None
-
-    def max_value(self, start, end_exclusive):
-        if self.range_end_exclusive <= start:
-            return 0
-        elif self.range_start >= end_exclusive:
-            return 0
-        elif self.range_start >= start and self.range_end_exclusive <= end_exclusive:
-            return self.cached_max
-        else:
-
-            return max(
-                self.left.max_value(start, end_exclusive) if self.left else 0,
-                self.right.max_value(start, end_exclusive) if self.right else 0
-            )
-
-    def getOrCreateChildNode(self, slot):
-        (left_start, left_end_exclusive), (right_start, right_end_exclusive) = self.get_child_node_ranges()
-        if left_start <= slot < left_end_exclusive:
-            if not self.left:
-                self.left = self.create_node(left_start, left_end_exclusive)
-            return self.left
-        else:
-            if not self.right:
-                self.right = self.create_node(right_start, right_end_exclusive)
-            return self.right
-
-    def update_max_value(self, slot, value):
-        node = self.getOrCreateChildNode(slot)
-        child_max = node.update_max_value(slot, value)
-        self.cached_max = max(child_max, self.cached_max)
-        return self.cached_max
+segment_tree_depth = 18
 
 class Solution:
     def lengthOfLIS(self, nums, k: int) -> int:
         if not nums:
             return 0
-        rootNode = SegmentTreeNode(0, 100001)
-        max_value = 0
-        l = []
+        segmentTrees = [[0]*(2**i) for i in range(segment_tree_depth)]
         for n in nums:
-            max_smaller = rootNode.max_value(max(n-k, 0), n)
-            max_value = rootNode.update_max_value(n, max_smaller+1)
-        return max_value
+            # Get the maximum value below n
+            rangeStart,rangeEndExclusive = max(n-k, 0), n
+            max_undervalue = 0
+            for i,l in reversed(list(enumerate(segmentTrees))):
+                if rangeStart == rangeEndExclusive:
+                    break
+                if rangeStart & 1:
+                    max_undervalue = max(max_undervalue, l[rangeStart])
+                    rangeStart += 1
+                if rangeEndExclusive & 1:
+                    max_undervalue = max(max_undervalue, l[rangeEndExclusive-1])
+                    rangeEndExclusive -= 1
+                rangeStart //= 2
+                rangeEndExclusive //= 2
+            new_value = max_undervalue + 1
+            segmentSize = 1
+            for l in reversed(segmentTrees):
+                segmentIndex = n//segmentSize
+                if new_value > l[segmentIndex]:
+                    l[segmentIndex] = new_value
+                else:
+                    break
+                segmentSize <<= 1
+
+        return segmentTrees[0][0]
