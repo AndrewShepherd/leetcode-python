@@ -11,7 +11,7 @@ class Solution:
             # Get the maximum value below n
             rangeStart,rangeEndExclusive = max(n-k, 0), n
             max_undervalue = 0
-            for i,l in reversed(list(enumerate(segmentTrees))):
+            for l in reversed(segmentTrees):
                 if rangeStart == rangeEndExclusive:
                     break
                 if rangeStart & 1:
@@ -22,14 +22,13 @@ class Solution:
                     rangeEndExclusive -= 1
                 rangeStart //= 2
                 rangeEndExclusive //= 2
+            # Now set it if it's bigger than the existing
             new_value = max_undervalue + 1
-            segmentSize = 1
             for l in reversed(segmentTrees):
-                segmentIndex = n//segmentSize
-                if new_value > l[segmentIndex]:
-                    l[segmentIndex] = new_value
+                if new_value > l[n]:
+                    l[n] = new_value
                 else:
                     break
-                segmentSize <<= 1
+                n //= 2
 
         return segmentTrees[0][0]
