@@ -10,7 +10,7 @@ class TestSolution(unittest.TestCase):
         result = sol.palindromePairs(input)
         self.assertEqual(sorted(result), sorted(expectedResult))
 
-    def test_0(self):
+    def test_6(self):
         sol= Solution()
         result = sol.palindromePairs(large_testcase.large_dataset)
 
