@@ -2,6 +2,7 @@ import unittest
 
 
 from robot_with_string import Solution
+from big_input import big_string
 
 class TestSolution(unittest.TestCase):
 
@@ -10,13 +11,13 @@ class TestSolution(unittest.TestCase):
         result = sol.robotWithString(pref)
         self.assertEqual(result, expectedResult)
 
-    def test_1(self):
+    def test_7(self):
         self.run_test(
             "zza",
             "azz"
         )
 
-    def test_2(self):
+    def test_0(self):
         self.run_test(
             "bdda",
             "addb"
@@ -24,17 +25,31 @@ class TestSolution(unittest.TestCase):
 
     def test_3(self):
         self.run_test(
-            "bddazza",
-            "addbazz"
+            "ibwqrkn",
+            "biknrqw"
         )
 
-    def test_4(self):
+    def test_6(self):
         self.run_test(
-            "zzabdda",
-            "addbazz"
+            "evokzbuginbpptrfaamp",
+            "aafmprtppbnigubzkove"
         )
 
-    def test_0(self):
+    def test_2(self):
+        big_input = "erqzmzchvpblikmmwnqbrwvdiaomkvrtiuoshvumbjitswimabygncijmnvjdqmhkaasyekbcvwqdmovtsnehtljntoyqafizjigroixsdlnenlheeureaoivqkmpfznqqowgwguifsbizfhogwvuhinvzxbeeztpfmnmtdjchtewilspapiauiguvlnzmchayxojpqkehlytkurvnsaaqoshuxjuenrddupjljmjsnetlkrreqnojxlgluptprnluetvfsydjjxguttyztbmiulkhjwnfonmaomqbtryfgrhhzktgkqeylbqbopswjuoyzypdpjqzxeoauuxfmplcrbrrexsyrzjcoxsfcvxsynqvzyeamzgorpazmgupaitpffurhpjcyvjkhnitbuthpvjcgiacjvrhfjlvrsltmtflmgipkjxdlipfexhkcpvbcrxotypzrqavninsvmneygdvxqejeioaihlsxjmlyqqulgldasqnfhosfekqtjeoipoknslwdruglcntburhadgfeffbynmvldjmjfpdlijeghhlyepgttwzmlqyidsuhnrchlqfgplxoqfzqbuychvhnfeelgozqqjrcmggplmwokfhbyohnbpzbhrqwfiptuxansirzcmiphycaiuldozgliteabvjzthapvgbhgwkkubokxwdzsvsvnclqczhuoiojyytcxgcegvytzunskgszodwoooqkbhqokcbtnzvraxjjsznbxikjpqxdjdyxaxumsyhvbdrzqibotilbgxtafzheergfibtxrqnbeyatiyuhgshdenkilbwmavoeeqxvmjpvydyqfmnkhuyeivnbpevgskahdisxgtlcetkcwvtxteyqwdlzbvafisjdgvsfiutxmtqasmcateqizsqczsetipncfjzilkuhprqmwtrzljxweckqnoobacszbesczprzbqebcuvlgdtdylfxsxkxalcwscwslkuiluhlroaweofdmekucvzmcicfmpiaskslikckiepaiqdwfaacqsgecntdwtijjhzedijzvjlpmtmbpkvfukdywtwzmxcyguccmkevfpknecanvknyjcvtzitepcexhllmslwelnwcbqvjluigwugthzmbvywdytghmwfhwpsfjxqvqichjnwdwzyiqimpuualvnyxeiyjqhfkhwawocgodvcjqrtylakpnrjucsrqsiueuxxitstuownowbiipwhcfdcqekzbollbreettxzkbzofoerxfnclbqzvdtsdhblxaaioqotqavedvremjebfsyuqcgthrnzcpjqxdpmvuoqqwjbmqvlosgjhfnnzmefhtvwkolxwcthymaeaimjyplacknhihbjswoqgzuhftnxwaoasnbqyptvrhlrokuhqccmjnopkivtyqvfcpprtgkjugrrdqipirfvyerpsjoamnogrvaqljjmndumqtgqihtgxwgbvzldqzqbhhofxpwcdjnqlhmqoskrddxnlgewsgvoxrntyguslxcujcwaaetfrbipprmbqafftlkxzfbgeufajbwmrmarfocnyuiolwlhdmgjgqmugfzcsthoofbwdkktvychghrqpjalqhjfhjjhhrzlfndspxaiifykcculbvwiemgeccqhnqdyypisqwsqrsmpytepzvrqscmoxautkqlrjlwvlbhtyxhzujdhrlkvuqxjvioatpwdnahghphmrhqyifabwjfmiqfdcovnksgdtxpwymynbkwnogoqwcyssejeonmyahkhsfnvtlctaqxzoqbxyshxevp"
+        self.run_test(
+            big_input,
+            None
+        )
+    
+    def test_1(self):
+        big_input = big_string
+        self.run_test(
+            big_input,
+            None
+        )
+
+    def test_5(self):
         self.run_test(
             "bydizfve",
             "bdevfziy"
