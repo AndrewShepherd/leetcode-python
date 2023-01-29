@@ -4,24 +4,28 @@ from functools import cache
 class Solution:
 
     def putMarbles(self, weights: list[int], k: int) -> int:
+
+        dp_lengths = len(weights)-k+1
+        start_val = (math.inf, -math.inf)
+        dp = [start_val] * dp_lengths
+        for i in range(len(dp)):
+            score = weights[0] + weights[i]
+            dp[i] = (score, score)
         
-        @cache
-        def solve_recursive(up_to, k, pick, initial):
-            if k == 1:
-                return weights[0] + weights[up_to-1]
-            if up_to == k:
-                return sum(weights[:up_to]) * 2
-            final_partition_possible_length = range(1,up_to-k+2)
-            value = initial
-            for l in final_partition_possible_length:
-                these_ends = (weights[up_to-l], weights[up_to-1])
-                sub_value = solve_recursive(up_to-l, k-1, pick, initial)
-                this_result = sub_value +sum(these_ends)
-                value = pick(value, this_result)
-            return value
-
-
-        max_result = solve_recursive(len(weights), k, max, 0)
-        min_result = solve_recursive(len(weights), k, min, math.inf)
-        return max_result - min_result
+        for offset in range(1, k):
+            dp2 = [start_val] * dp_lengths
+            for i in range(len(dp2)):
+                best_min, best_max = start_val
+                for j in range(i+1):
+                    prev_min, prev_max = dp[j]
+                    this_start, this_end = (weights[j + offset], weights[i + offset])
+                    this_val = this_start + this_end
+                    this_min = prev_min + this_val
+                    this_max = prev_max + this_val
+                    best_min = min(best_min, this_min)
+                    best_max = max(best_max, this_max)
+                dp2[i] = (best_min, best_max)
+            dp = dp2
+        l,r = dp[-1]
+        return r - l
 
