@@ -16,7 +16,7 @@ class TestSolution(unittest.TestCase):
         self.assertEqual(4, result)
 
 
-    def test_0(self):
+    def test_1(self):
         weights = [1,4,2,5,2]
         k = 3
         s = Solution()
@@ -29,7 +29,7 @@ class TestSolution(unittest.TestCase):
         # min [1][4]  (10) # max [1,4] (10)
         # min [1][4,2]=8 # max [1,4][2] = 9
         # min [1][4,2,5] = 10 # max [1,4,2][5] = 13  
-        
+
 
         #[1][4][2,5,2] = (1+1) + (4+4)+(2+2) = 2 + 8 + 4 = 12
         #[1, 4, 2][5][2] = (5+5) + (2) + (3) = 15
@@ -56,7 +56,7 @@ class TestSolution(unittest.TestCase):
         self.assertEqual(0, result)
 
 
-    def test_1(self):
+    def test_0(self):
         weights = [1,2,3,4,5]
         k = 1
         s = Solution()
