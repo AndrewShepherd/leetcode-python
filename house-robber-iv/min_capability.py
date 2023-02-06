@@ -1,34 +1,29 @@
-import heapq
 import math
-from functools import cache
 
 class Solution:
     def minCapability(self, nums: list[int], k: int) -> int:
 
-        @cache
-        def solve_recursively(start_index, k):
-            if k == 0:
-                return None
-            if (len(nums)-start_index+1)//2 < k:
-                return None
-            if k == 1:
-                return min(nums[start_index:])
-            
-            
-            value_with_start_index = max(nums[start_index], solve_recursively(start_index + 2, k - 1))
-            value_without_start_index = solve_recursively(start_index + 1, k)
+        #k = (l + 1)/2
+        # 2*k = l+1
+        #
 
-            best_result = value_with_start_index
+        two_behind = [nums[0]] + [math.inf]*(k-1)
+        one_behind = [min(nums[0:2])] + [math.inf]*(k-1)
 
-            if value_without_start_index:
-                if best_result:
-                    best_result = min(best_result, value_without_start_index)
-                else:
-                    best_result = value_without_start_index
+        for i in range(2, len(nums)):
+            n = nums[i]
+            dp = two_behind[:]
+            j = min(k-1, i//2)
+            while(j > 0):
+                this_value = max(two_behind[j-1], n)
+                if this_value == math.inf:
+                    raise "How did that happen?"
+                if this_value >= two_behind[j]:
+                    break
+                dp[j] = this_value
+                j -= 1
+            dp[0] = min(two_behind[0], n)
 
-            return best_result
-
-
-        return solve_recursively(0, k)
-
-        
+            two_behind = [min(l,r) for l,r in zip(one_behind, two_behind)]
+            one_behind = dp
+        return min(two_behind[-1], one_behind[-1])
