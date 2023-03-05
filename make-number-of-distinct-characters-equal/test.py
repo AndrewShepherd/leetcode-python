@@ -1,8 +1,6 @@
 import unittest
 from is_it_possible import Solution
 
-
-
 class TestSolution(unittest.TestCase):
 
     def test_1(self):
