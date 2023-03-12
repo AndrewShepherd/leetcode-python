@@ -12,4 +12,7 @@ class Solution:
                 new_dict[new_key] += v
             beautiful_count += new_dict[0]
             previous = new_dict
+            double_keys = list([k for k,v in previous.items() if v > 1])
+            if len(double_keys):
+                dummy = 3
         return beautiful_count

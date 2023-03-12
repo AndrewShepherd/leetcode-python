@@ -7,7 +7,7 @@ class TestSolution(unittest.TestCase):
     def test_0(self):
         nums =  big_input.nums
         s = Solution()
-        self.assertEqual(2, s.beautifulSubarrays(nums))
+        self.assertEqual(22, s.beautifulSubarrays(nums))
 
     def test_3(self):
         nums =  [4,3,1,2,4]
