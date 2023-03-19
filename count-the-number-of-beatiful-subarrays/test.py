@@ -4,12 +4,12 @@ from count_beautiful_subarrays import Solution
 
 class TestSolution(unittest.TestCase):
 
-    def test_0(self):
+    def test_4(self):
         nums =  big_input.nums
         s = Solution()
         self.assertEqual(22, s.beautifulSubarrays(nums))
 
-    def test_3(self):
+    def test_0(self):
         nums =  [4,3,1,2,4]
         s = Solution()
         self.assertEqual(2, s.beautifulSubarrays(nums))
