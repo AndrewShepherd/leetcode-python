@@ -3,6 +3,13 @@ from number_of_ways_of_cutting_pizza import Solution
 
 class TestSolution(unittest.TestCase):
 
+    def test_0(self):
+        pizza = ["AA", "AA"]
+        k = 2
+        output = 2
+        s = Solution()
+        self.assertEqual(output, s.ways(pizza, k))
+
     def test_1(self):
         pizza = [".A..A","A.A..","A.AA.","AAAA.","A.AA."]
         k = 5
