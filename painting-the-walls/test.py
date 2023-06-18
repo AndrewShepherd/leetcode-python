@@ -6,7 +6,16 @@ from painting_the_walls import Solution
 
 class TestSolution(unittest.TestCase):
 
-    def test_2(self):
+    def test_0(self):
+        s = Solution()
+
+        cost = [1,4]
+        time = [1,1]
+        expected = 1
+        result = s.paintWalls(cost, time)
+        self.assertEqual(result, expected)
+
+    def test_6(self):
         s = Solution()
 
         cost = [1,2,3,2]
@@ -24,7 +33,7 @@ class TestSolution(unittest.TestCase):
         result = s.paintWalls(cost, time)
         self.assertEqual(result, expected)
 
-    def test_0(self):
+    def test_2(self):
         s = Solution()
 
         cost = [26,53,10,24,25,20,63,51]

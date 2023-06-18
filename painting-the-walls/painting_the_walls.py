@@ -1,49 +1,33 @@
 import math
-from functools import cache
+from collections import defaultdict
 
 class Solution:
     def paintWalls(self, cost: list[int], time: list[int]) -> int:
-        costs_and_time = list(zip(cost, time))
-        costs_and_time.sort(key=lambda t:(t[0], 0-t[1]))
-        paid_index = 0
-        free_index = len(costs_and_time)
-        initial_total_cost = 0
-        while(free_index > paid_index):
-            initial_total_cost += costs_and_time[paid_index][0]
-            free_index -= costs_and_time[paid_index][1]
-            paid_index += 1
-
-        @cache
-        def solve_recursively(start_index, minimum_time, maximum_cost):
-            if start_index >= len(costs_and_time):
-                if minimum_time > 0:
-                    return None
+        if len(cost) <= 2:
+            return min(cost)
+        dp = defaultdict(lambda: math.inf)
+        dp[time[0]] = cost[0]
+        dp[-1] = 0
+        best_result = math.inf
+        for i in range(1, len(cost)):
+            c = cost[i]
+            t = time[i]
+            dp2 = defaultdict(lambda: math.inf)
+            remaining_walls_after_this_one = len(cost) - i - 1
+            for remaining_time, cost_so_far in dp.items():
+                remaining_time_if_we_paint = remaining_time + t
+                total_cost_if_we_paint = cost_so_far + c
+                if total_cost_if_we_paint < best_result:
+                    if remaining_walls_after_this_one <= remaining_time_if_we_paint:
+                        best_result = min(best_result, total_cost_if_we_paint)
+                    else:
+                        dp2[remaining_time_if_we_paint] = min(dp2[remaining_time_if_we_paint], total_cost_if_we_paint)
+                remaining_time_if_we_dont_paint = remaining_time - 1
+                if remaining_walls_after_this_one <= remaining_time_if_we_dont_paint:
+                    best_result = min(best_result, cost_so_far)
                 else:
-                    return 0
-            if maximum_cost < 0:
-                return None
-            
-            if minimum_time < 0 and 0-minimum_time >= len(costs_and_time) - start_index:
-                return 0
-            best_result = math.inf
-            cost, time = costs_and_time[start_index]
+                    dp2[remaining_time_if_we_dont_paint] = min(dp2[remaining_time_if_we_dont_paint], cost_so_far)
+            dp = dp2
+        return best_result
 
-            paid_subresult = solve_recursively(start_index + 1, minimum_time - time, maximum_cost - cost)
-            cost_if_we_pay_for_it = (cost + paid_subresult) if paid_subresult != None else None
-            unpaid_subresult = solve_recursively(
-                start_index + 1, 
-                minimum_time + 1, 
-                min(maximum_cost, cost_if_we_pay_for_it if cost_if_we_pay_for_it != None else math.inf)
-            )
-            cost_if_we_dont_pay_for_it = unpaid_subresult
-            if cost_if_we_pay_for_it != None:
-                best_result = cost_if_we_pay_for_it
-            if cost_if_we_dont_pay_for_it != None:
-                best_result = min(best_result, cost_if_we_dont_pay_for_it)
-            return best_result if best_result != math.inf else None
-                
-        result = solve_recursively(0, 0, initial_total_cost)
-        if result == None:
-            return initial_total_cost
-        else:
-            return min(initial_total_cost, result)
+        
