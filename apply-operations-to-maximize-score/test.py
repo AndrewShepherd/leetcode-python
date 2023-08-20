@@ -12,7 +12,7 @@ class TestSolution(unittest.TestCase):
         result = s.maximumScore(nums, k)
         self.assertEqual(171781892, result) 
 
-    def test_1(self):
+    def test_0(self):
         s = Solution()
         nums = [8,3,9,3,8] 
         k = 2
@@ -27,7 +27,7 @@ class TestSolution(unittest.TestCase):
         result = s.maximumScore(nums, k)
         self.assertEqual(4788, result)   
 
-    def test_0(self):
+    def test_1(self):
         s = Solution()
         nums = [3289,2832,14858,22011]
         k = 6

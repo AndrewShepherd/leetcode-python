@@ -13,36 +13,31 @@ class Solution:
     def maximumScore(self, nums: list[int], k: int) -> int:
 
         prime_index_lookups = [prime_scores[n] for n in nums]
-        max_prime_score = max(prime_index_lookups)
-        forward_lookups = [[-1] * len(nums) for _ in range(max_prime_score+1)]
-        for i,p in enumerate(prime_index_lookups):
-            for j in range(p+1):
-                forward_lookups[j][i] = i
-            if i > 0:
-                for j in range(p+1, len(forward_lookups)):
-                    forward_lookups[j][i] = forward_lookups[j][i-1]
+        
+        q = []
+        s = [(prime_index_lookups[0], 0)]
+        for i in range(1, len(prime_index_lookups)):
+            while s and s[-1][0] < prime_index_lookups[i]:
+                earlier_score, middle_index = s.pop()
+                first_index = 0 if not s else s[-1][1] + 1
+                power = (i - middle_index) * (middle_index - first_index + 1)
+                q.append((0 - nums[middle_index], power))
+            s.append((prime_index_lookups[i], i))
+        while s:
+            prime_score, index = s.pop()
+            first_index = 0 if not s else s[-1][1] + 1
+            power = (len(nums) - index) * (index - first_index + 1)
+            q.append((0 - nums[index], power))
+
+        heapq.heapify(q)
         result = 1
-
-        backward_lookups = [[len(nums)] * len(nums) for _ in range(max_prime_score+2)]
-        for i in range(len(prime_index_lookups)-1, -1, -1):
-            p = prime_index_lookups[i]
-            for j in range(p+1):
-                backward_lookups[j][i] = i 
-            if i < len(prime_index_lookups) - 1:
-                for j in range(p+1, len(backward_lookups)):
-                    backward_lookups[j][i] = backward_lookups[j][i+1]
-
-        nums_and_indexes = [(0-n, i) for i,n in enumerate(nums)]
-        heapq.heapify(nums_and_indexes)
         while k:
-            nNegative, index = heapq.heappop(nums_and_indexes)
-            n = 0 - nNegative
-            n_prime_score = prime_scores[n]
-            right_most_index = len(nums) - 1 if index == len(nums) - 1 else backward_lookups[n_prime_score+1][index+1] - 1            
-            left_most_index = 0 if index==0 else (forward_lookups[n_prime_score][index-1] + 1)
-            power = (right_most_index - index + 1) * (index - left_most_index + 1)
-            power = min(power, k)
+            n_negative, available = heapq.heappop(q)
+            power = min(available, k)
+            result = result * pow(0 - n_negative, power, MODULO) % MODULO
             k -= power
-            result = result * pow(n, power, MODULO) % MODULO
         return result
+
+        return 0
+
         
