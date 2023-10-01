@@ -17,10 +17,6 @@ class TestSolution(unittest.TestCase):
         result = s.minimumMoves(grid)
         self.assertEqual(4, result)
 
-#  3  2  0
-#  0  1  0
-#  0  3  0
-
     def test_0(self):
         s = Solution()
         grid = [[3,2,0],[0,1,0],[0,3,0]]
