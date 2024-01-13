@@ -1,53 +1,31 @@
 from functools import cache
+import sys
 
 class Solution:
     def maxPartitionsAfterOperations(self, s: str, k: int) -> int:
-        if k == 26:
-            return 1
-        
+        s = [1 << (ord(c) - ord('a')) for c in s]
 
-
-        s = [ord(c) - ord('a') for c in s]
-
-
+        sys.setrecursionlimit(max(1000, len(s)))
         @cache
-        def calculate_score(start_index):
-            distinct = set()
-            partitions = 0
-            for c in s[start_index:]:
-                if not distinct:
-                    partitions += 1
-                if (c not in distinct):
-                    if len(distinct) == k:
-                        partitions += 1
-                        distinct = { c }
-                    else:
-                        distinct.add(c)
-            return partitions
-        
-        @cache
-        def calculate_score_with_substitution(start_index):
-            distinct = set()
-            first_appearances = [None] * 26
-            first_duplicated_item_index = [None]
-            for i in range(start_index, len(s)):
-                c = s[i]
-                if c in distinct:
-                    if first_duplicated_item_index == None:
-                        first_duplicated_item_index = first_appearances[c]
-                        if len(distinct) == k:
-                            return 1 + calculate_score(start_index)
+        def brute_force_solve(index, one_substitution_left, current_set):
+            if index == len(s):
+                best_result = 1 if current_set else 0
+            else:
+                new_set = current_set | s[index]
+                if new_set.bit_count() > k:
+                    best_result = 1 + brute_force_solve(index + 1, one_substitution_left, s[index])
                 else:
-                    if len(distinct) == k - 1 and first_duplicated_item_index != None:
-                        first_appearances[c] = i
-                    if len(distinct) == k - 1 and first_duplicated_item_index != None:
-                        return 1 + calculate_score(start_index)
-                    if len(distinct) == k:
-                        return 1 + calculate_score_with_substitution(start_index)
-                    distinct.add(c)
-            return 1
+                    best_result = brute_force_solve(index + 1, one_substitution_left, new_set)
                 
+                if one_substitution_left:
+                    for i in range(26):
+                        mask = 1 << i
+                        new_set = current_set | mask
+                        if new_set.bit_count() > k:
+                            best_result = max(best_result, 1 + brute_force_solve(index + 1, False, mask))
+                        else:
+                            best_result = max(best_result, brute_force_solve(index + 1, False, new_set))
+            return best_result
 
-
-        return calculate_score_with_substitution(0)
+        return brute_force_solve(0, True, 0)
         

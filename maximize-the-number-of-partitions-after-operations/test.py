@@ -48,6 +48,13 @@ class TestSolution(unittest.TestCase):
         result = sol.maxPartitionsAfterOperations(s, k)
         self.assertEqual(4, result)
 
+    def test_6(self):
+        sol = Solution()
+        s = "lrwlnygoeoxxmdnvsqcibveovrezszvzlsxkinrcvicsgsmtosrdkgpmzpfbybuvkuaetuxpbdxvtkesoqmamssbqybepmojngqaupvpyhnkoiidgbminmjrnmdmxanqzmbfffzfhooihawqjeuxwmvqqiuxsukzbkcmshherzapsjvruugifkglyfsewpilexnivpijxkvstapsllpgqlmbbkfvwwjefewfvauarbaxgakuduiglwursawvzapfipxrpdacxsnnhtnuhoxfwpmqbyfvtokgkdzsbotyeysefdgnpvnkfrhhlpbtukvbdctwtxydeqmppcoiokqskmeplxbltgkqhkjpksznszcjtrioyhglhpdarukfhquabuphfdiwhhdsnindzlijljhpvktomocvrpqhihqnedyolhwahmgiqswsjbiomxhscwosprkdlwiuvsfizmqlnesxtbgdepqrkglyhfhhdqqesiumkrkoehaohhckffndaqmznuxspdxegmopyzonkqosajmsrlncgaxosw"
+        k = 25
+        result = sol.maxPartitionsAfterOperations(s, k)
+        self.assertEqual(7, result)
+
 try:
     unittest.main()
 except SystemExit:
