@@ -55,108 +55,52 @@ def decrement_list(n):
             result[i] = 9
     return result
 
-def decrement_list_to_next_palindrome(n):
-    if is_zero(n):
-        return None
-    if len(n) == 0:
-        return n
-    if is_palindrome(n):
-        n = decrement_list(n)
-
-    if n[-1] > n[0]:
-        if is_palindrome(n[1:-1]):
-            return [*n[:-1], n[0]]
-        else:
-            middle = n[1:-1]
-            middle_decremented = decrement_list_to_next_palindrome(middle)
-            if middle_decremented != None:
-                return [n[0], *middle_decremented, n[0]]
-            else:
-                raise 'Unhandled'
-    if n[0] > 0:
-        return [n[0]-1, *n[1:-1], n[0]-1]
-    raise 'Unhandled'
-
-def increment_list_to_next_palindrome(n):
-    if len(n) == 0:
-        return n
-    if is_all_nines(n):
-        return None
-    if is_palindrome(n):
-        n = increment_list(n)
-    if n[-1] < n[0]:
-        if is_palindrome(n[1:-1]):
-            return [*n[:-1], n[0]]
-        else:
-            middle = n[1:-1]
-            middle_incremented = increment_list_to_next_palindrome(middle)
-            if(middle_incremented):
-                return [n[0], *middle_incremented, n[0]]
-    else:
-        middle = n[1:-1]
-        middle_incremented = increment_list_to_next_palindrome(middle)
-        if middle_incremented != None:
-            return [n[0], *middle_incremented, n[0]]
-    raise 'Unhandled'
 
 def find_next_higher_palindromic_number(n):
-    if isinstance(n, int):
-        n = to_int_array(n)
-    if len(n) == 1 and n[0] < 9:
-        return n[0] + 1
-    elif is_palindrome(n):
-        return find_next_higher_palindromic_number(to_int(n) + 1)
-    elif n[0] > n[-1]:
-        if (is_palindrome(n[1:-1])):
-            return to_int([*n[:-1], n[0]])
-        else:
-            middle_incremented = increment_list_to_next_palindrome(n[1:-1])
-            if (middle_incremented):
-                return to_int([n[0], *middle_incremented, n[0]])
-            raise "This is a situation not dealt with"
+    if n < 9:
+        return n + 1
+    n_list = to_int_array(n)
+    if len(n_list) % 2 == 0:
+        left = n_list[:len(n_list)//2]
+        construct = lambda l: l + l[::-1]
     else:
-        middle = n[1:-1]
-        if len(middle) == 0:
-            if n[0] == 9:
-                return 101
-            else:
-                return to_int([n[0]+1, n[0] + 1])
-        elif is_zero(middle):
-            return to_int([n[0], *([1] * len(middle)), n[0]])
-        else:
-            middle_higher = to_int_array(find_next_higher_palindromic_number(middle))
-            if len(middle_higher) == len(middle):
-                return to_int([n[0], *middle_higher, n[0]])
-            else:
-                return to_int([n[0]+1, *([0]*len(middle)), n[0]+1])
-
-def find_lower_palindromic_number(n):
-    if isinstance(n, int):
-        n = to_int_array(n)
-    if len(n) == 1:
-        return n[0] - 1
-    if is_palindrome(n):
-        return find_lower_palindromic_number(to_int(n) - 1)
-    if n[-1] > n[0]:
-        if (is_palindrome(n[1:-1])):
-            return to_int([*n[:-1], n[0]])
-        else:
-            middle = n[1:-1]
-            middle_lower = decrement_list_to_next_palindrome(middle)
-            if len(middle_lower) == len(middle):
-                return to_int([n[0], *middle_lower, n[0]])
-            else:
-                raise "Unhandled situation"
+        left = n_list[:len(n_list)//2+1]
+        construct = lambda l: l + l[-2::-1]
+    while(True):
+        result = to_int(construct(left))
+        if result > n:
+            return result
+        elif left == [9] * len(left):
+            return to_int([1] + [0]*len(n_list)) + 1
+        left = increment_list(left)
+ 
+def find_lower_palindromic_number(n : int):
+    if n <= 10:
+        return n - 1
+    n_list = to_int_array(n)
+    if len(n_list) == 1:
+        return n_list[0] - 1
+    
+    if (len(n_list) % 2 == 0):
+        left = n_list[:len(n_list)//2]
+        while(True):
+            result = left + left[::-1]
+            result = to_int(result)
+            if result < n:
+                return result
+            if left == [1] + [0]*(len(left)-1):
+                return to_int([9] * (len(n_list)-1))
+            left = decrement_list(left)
     else:
-        middle = n[1:-1]
-        if is_zero(middle):
-            return to_int([n[0]-1, *([9]*len(middle)), n[0]-1])
-        else:
-            middle_lower = decrement_list_to_next_palindrome(middle)
-            if is_zero(middle_lower):
-                middle_lower = [0] * len(middle)
-            if len(middle_lower) == len(middle):
-                return to_int([n[0], *middle_lower, n[0]])
+        left = n_list[:len(n_list)//2+1]
+        while(True):
+            result = left + left[-2::-1]
+            result = to_int(result)
+            if result < n:
+                return result
+            if left == [1] + [0]*(len(left)-1):
+                return to_int([9] * (len(n_list)-1))
+            left = decrement_list(left)
 
 def find_best(starting_value, transform, calculate_score):
     best_score = calculate_score(starting_value)
