@@ -1,0 +1,79 @@
+nums = [001, 100, 001, 010]
+
+ans = 0
+bit = 2  (100b)
+
+    elements_that_dont_need_to_be_swapped = 0
+    cur = 111b
+    target = 011b
+
+    num = nums[0] = 001b:
+        cur = cur & num = 001b
+        is cur clear of significant bits? YES
+            increment elements_that_dont_need_to_be_swapped to 1
+            reset cur to 111b
+    num = nums[1] == 100b:
+        cur = cur & num = 100b
+        is cur clear of significant bits? NO
+            keep cur at 100b
+    num = nums[2] = 001:
+        cur = cur & num = 000b
+        is cur clear of significant bits? YES
+            increment elements_that_dont_need_to_be_swapped to 2
+            reset cur to 111b
+    num = nums[3] = 010b:
+        cur = cur & num = 001b
+        is cur clear of significatn bits? YES
+            increment elements_that_dont_need_to_be_swapped to 3
+            reset cur to 111b
+    elements_that_need_to_be_swapped = 4 - elements_that_dont_need_to_be_swapped = 1
+    we can do without bit 2
+
+bit = 1 (010b)
+
+    elements_that_dont_need_to_be_swapped = 0
+    cur = 111b
+    target = 001b
+    num = nums[0] = 001b:
+        cur = cur & num = 001b
+        is cur clear of significant bits? YES
+            increment elements_that_dont_need_to_be_swapped to 1
+            reset cur to 111b
+    num = nums[1] = 100b:        
+        cur = cur & num = 100b
+        is cur clear of significant bits? NO
+            keep cur at 100b
+    num = nums[2] = 001:
+        cur = cur & num = 000b
+        is cur clear of significant bits? YES
+            increment elements_that_dont_need_to_be_swapped to 2
+            reset cur to 111b        
+    num = nums[3] == 010:
+        cur = cur & num = 010b
+        if cur clear of significant bits? NO
+    elements_that_need_to_be_swapped = 4 - elements_that_dont_need_to_be_swapped = 2
+    we are stuck with bit 2
+
+bit = 0 (010b)
+
+    elements_that_dont_need_to_be_swapped = 0
+    cur = 111b
+    target = 010b  # Includes bit[1], becuase we're stuck with it
+    num = nums[0] = 001b:
+        cur = cur & num = 001b
+        is cur clear of significant bits? NO
+    num = nums[1] = 100b:
+        cur = cur & num = 001b and 000b
+        is cur clear of significant bits? YES (Because we've already decided to swap it with the left one)
+            increment elements_that_dont_need_to_be_swapped to 1
+            reset cur = 111b
+    num = nums[2] = 001b:
+        cur = cur & num = 001b
+        is cur clear of significant bits? NO. THIS NEEDS SWAPPING
+    num = nums[3] == 010:
+        cur = cur & num = 010b
+        is cur clear of significant bits? YES. (Because we've accepted that bit[1] is in the list)
+            increment elements_that_dont_need_to_be_swapped to 2
+            reset cur = 111b
+    elements_that_need_to_be_swapped = 4 - elements_that_dont_need_to_be_swapped = 2
+    we are stuck with bit 1    
