@@ -1,7 +1,6 @@
 bit_count = 30
 all_bits = (1 << bit_count) - 1
 
-
 def bits_to_right_of(bit):
     return (1 << bit) - 1
 
