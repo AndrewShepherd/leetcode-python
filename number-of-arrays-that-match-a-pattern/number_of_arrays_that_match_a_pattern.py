@@ -1,5 +1,3 @@
-from typing import *
-
 def convert_difference(d):
     if d > 0:
         return 'z'
@@ -8,145 +6,71 @@ def convert_difference(d):
     else:
         return 'v'
     
+def create_lookup(p):
+    p_lookup = [0] * len(p)
+    i = 0
+    j = 1
+    for j in range(1, len(p)):
+        if p[i] == p[j]:
+            i += 1
+        else:
+            while True:
+                i -= 1
+                if (i == -1):
+                    break
+                if p[:i+1] == p[j-i:j+1]:
+                    break
+            i += 1
+        p_lookup[j] = i
+    return p_lookup
 
+def dumb_search(p, n):
+    index = 0
+    while True:
+        index = n.find(p, index)
+        if (index == -1):
+            break
+        yield index
+        index += 1
 
-# This version is sensitive to the English alphabet in ASCII for case-insensitive matching.
-# To remove this feature, define alphabet_index as ord(c), and replace instances of "26"
-# with "256" or any maximum code-point you want. For Unicode you may want to match in UTF-8
-# bytes instead of creating a 0x10FFFF-sized table.
+def smart_search(p, n):
+    count = 0
+    p_lookup = create_lookup(p)
+    n_index = 0
+    p_index = 0
+    while True:
+        if n_index == len(n):
+            break
+        if p[p_index] == n[n_index]:
+            if p_index == len(p) - 1:
+                yield n_index - len(p) + 1
+                count += 1
+                # Not sure of the numbers
+                if p_lookup[p_index] == 0:
+                    p_index = 0
+                else:
+                    p_index = p_lookup[p_index]
+                n_index += 1
+            else:
+                p_index += 1
+                n_index += 1
+        else:
+            if p_index > 0:
+                p_index = p_lookup[p_index-1]
+            else:
+                n_index += 1
 
-ALPHABET_SIZE = 26
-
-def alphabet_index(c: str) -> int:
-    """Return the index of the given character in the English alphabet, counting from 0."""
-    val = ord(c.lower()) - ord("a")
-    assert val >= 0 and val < ALPHABET_SIZE
-    return val
-
-def match_length(S: str, idx1: int, idx2: int) -> int:
-    """Return the length of the match of the substrings of S beginning at idx1 and idx2."""
-    if idx1 == idx2:
-        return len(S) - idx1
-    match_count = 0
-    while idx1 < len(S) and idx2 < len(S) and S[idx1] == S[idx2]:
-        match_count += 1
-        idx1 += 1
-        idx2 += 1
-    return match_count
-
-def fundamental_preprocess(S: str) -> list[int]:
-    """Return Z, the Fundamental Preprocessing of S.
-
-    Z[i] is the length of the substring beginning at i which is also a prefix of S.
-    This pre-processing is done in O(n) time, where n is the length of S.
-    """
-    if len(S) == 0:  # Handles case of empty string
-        return []
-    if len(S) == 1:  # Handles case of single-character string
-        return [1]
-    z = [0 for x in S]
-    z[0] = len(S)
-    z[1] = match_length(S, 0, 1)
-    for i in range(2, 1 + z[1]):  # Optimization from exercise 1-5
-        z[i] = z[1] - i + 1
-    # Defines lower and upper limits of z-box
-    l = 0
-    r = 0
-    for i in range(2 + z[1], len(S)):
-        if i <= r:  # i falls within existing z-box
-            k = i - l
-            b = z[k]
-            a = r - i + 1
-            if b < a:  # b ends within existing z-box
-                z[i] = b
-            else:  # b ends at or after the end of the z-box, we need to do an explicit match to the right of the z-box
-                z[i] = a + match_length(S, a, r + 1)
-                l = i
-                r = i + z[i] - 1
-        else:  # i does not reside within existing z-box
-            z[i] = match_length(S, 0, i)
-            if z[i] > 0:
-                l = i
-                r = i + z[i] - 1
-    return z
-
-def bad_character_table(S: str) -> list[list[int]]:
-    if len(S) == 0:
-        return [[] for a in range(ALPHABET_SIZE)]
-    R = [[-1] for a in range(ALPHABET_SIZE)]
-    alpha = [-1 for a in range(ALPHABET_SIZE)]
-    for i, c in enumerate(S):
-        alpha[alphabet_index(c)] = i
-        for j, a in enumerate(alpha):
-            R[j].append(a)
-    return R
-
-def good_suffix_table(S: str) -> list[int]:
-    L = [-1 for c in S]
-    N = fundamental_preprocess(S[::-1])  # S[::-1] reverses S
-    N.reverse()
-    for j in range(0, len(S) - 1):
-        i = len(S) - N[j]
-        if i != len(S):
-            L[i] = j
-    return L
-
-def full_shift_table(S: str) -> list[int]:
-    F = [0 for c in S]
-    Z = fundamental_preprocess(S)
-    longest = 0
-    for i, zv in enumerate(reversed(Z)):
-        longest = max(zv, longest) if zv == i + 1 else longest
-        F[-i - 1] = longest
-    return F
-
-def string_search(P, T) -> list[int]:
-
-    if len(P) == 0 or len(T) == 0 or len(T) < len(P):
-        return []
-
-    match_count = 0
-
-    # Preprocessing
-    R = bad_character_table(P)
-    L = good_suffix_table(P)
-    F = full_shift_table(P)
-
-    k = len(P) - 1      # Represents alignment of end of P relative to T
-    previous_k = -1     # Represents alignment in previous phase (Galil's rule)
-    while k < len(T):
-        i = len(P) - 1  # Character to compare in P
-        h = k           # Character to compare in T
-        while i >= 0 and h > previous_k and P[i] == T[h]:  # Matches starting from end of P
-            i -= 1
-            h -= 1
-        if i == -1 or h == previous_k:  # Match has been found (Galil's rule)
-            match_count += 1
-            k += len(P) - F[1] if len(P) > 1 else 1
-        else:  # No match, shift by max of bad character and good-suffix rules
-            char_shift = i - R[alphabet_index(T[h])][i]
-            if i + 1 == len(P):  # Mismatch happened on first attempt
-                suffix_shift = 1
-            elif L[i + 1] == -1:  # Matched suffix does not appear anywhere in P
-                suffix_shift = len(P) - F[i + 1]
-            else:               # Matched suffix appears in P
-                suffix_shift = len(P) - 1 - L[i + 1]
-            shift = max(char_shift, suffix_shift)
-            previous_k = k if shift >= i + 1 else previous_k  # Galil's rule
-            k += shift
-    return match_count
+def count_matches(p, n):
+    c = 0
+    for v in smart_search(p, n):
+        c += 1
+    return c
 
 class Solution:
     def countMatchingSubarrays(self, nums: list[int], pattern: list[int]) -> int:
         nums_as_pattern = [convert_difference(nums[i] - nums[i-1]) for i in range(1, len(nums))]
-        pattern = [convert_difference(e) for e in pattern]
-
-
-
-        n = ''.join(nums_as_pattern)
-        p = ''.join(pattern)
-        
-        return string_search(p, n)
+        pattern = [convert_difference(e) for e in pattern]        
+        return count_matches(''.join(pattern), ''.join(nums_as_pattern))
 
             
         
