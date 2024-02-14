@@ -33,22 +33,14 @@ def dumb_search(p, n):
         index += 1
 
 def smart_search(p, n):
-    count = 0
     p_lookup = create_lookup(p)
     n_index = 0
     p_index = 0
-    while True:
-        if n_index == len(n):
-            break
+    while n_index != len(n):
         if p[p_index] == n[n_index]:
             if p_index == len(p) - 1:
                 yield n_index - len(p) + 1
-                count += 1
-                # Not sure of the numbers
-                if p_lookup[p_index] == 0:
-                    p_index = 0
-                else:
-                    p_index = p_lookup[p_index]
+                p_index = p_lookup[p_index]
                 n_index += 1
             else:
                 p_index += 1
