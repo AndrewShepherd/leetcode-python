@@ -8,20 +8,19 @@ def convert_difference(d):
     
 def create_lookup(p):
     p_lookup = [0] * len(p)
-    i = 0
+    matching_prefix_length = 0
     j = 1
     for j in range(1, len(p)):
-        if p[i] == p[j]:
-            i += 1
+        if p[matching_prefix_length] == p[j]:
+            matching_prefix_length += 1
         else:
-            while True:
-                i -= 1
-                if (i == -1):
+            while True :
+                if (matching_prefix_length == 0):
                     break
-                if p[:i+1] == p[j-i:j+1]:
+                if p[:matching_prefix_length] == p[j-matching_prefix_length+1:j+1]:
                     break
-            i += 1
-        p_lookup[j] = i
+                matching_prefix_length -= 1
+        p_lookup[j] = matching_prefix_length
     return p_lookup
 
 def dumb_search(p, n):
