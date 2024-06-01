@@ -6,13 +6,14 @@ def rotated_key_fits(circle, key):
     return True
 
 def rotate_key(circle, key):
-    circle = sorted(list(circle))
-    key = sorted(list(key))
-    for n in circle:
-        rotation = key[0] - n
-        rotated_key = [(k - rotation) % 16 for k in key]
-        if rotated_key_fits(circle, rotated_key):
-            yield rotated_key
+    if key != tuple():
+        circle = sorted(list(circle))
+        key = sorted(list(key))
+        for n in circle:
+            rotation = key[0] - n
+            rotated_key = [(k - rotation) % 16 for k in key]
+            if rotated_key_fits(circle, rotated_key):
+                yield rotated_key
 
 def apply_key_to_circle(circle, rotation):
     return tuple([c for c in circle if c not in rotation])
@@ -45,25 +46,25 @@ class Solution:
 
     def solve(self):
         all_circles = [
-                    (5,6,7,10,13,14,15),
-                    (4,8,9,13,14),
-                    (1,2,4,7,9,12,13),
-                    (5,6,8,9,10,11,14)
-                ]
+            (3,5,9,10),
+            (1,3,4,6,7,10,14),
+            (2,3,4,7,8,9,10,11),
+            (0,9,14)    
+        ]
 
         all_keys = [
-            (2,10),
-            (1,12),
-            (8,9,11),
-            (3,8,14),
+            (0,1),
+            (),
+            (1,6,14),
+            (3,4,10,11),
             (5,10),
-            (1,9,12),
-            (2,10,14),
-            (3,4,11,12),
-            (3,8,12),
-            (2,4,9,13),
-            (1,4,5,7),
-            (2,8)
+            (3,5),
+            (3,4,10),
+            (3,8,9,10),
+            (3,4,7,10),
+            (13,),
+            (8,),
+            (1,6,14)
         ]
 
 
