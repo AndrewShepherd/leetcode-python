@@ -13,8 +13,6 @@ class Solution:
             for i in range(value, len(s), value):
                 s[i] += count
 
-        result = 0
-        for n in nums1:
-            result += s[n]
-        return result
+        return sum(s[n] for n in nums1)
+
 
