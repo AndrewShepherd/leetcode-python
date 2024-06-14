@@ -51,12 +51,15 @@ def merge(l: list[tuple[int, int]]) -> list[tuple[int, int]]:
 # amount_behind(nums_length-1)/(nums_length-2) = x
 
 def sove_with_one_item_left(amount_behind, nums_length, cost1, cost2) -> int:
-    if amount_behind < (nums_length - 1):
-        return amount_behind * cost1
+    cost_1_alone = amount_behind * cost1
+    if cost1 <= cost2:
+        return cost_1_alone
+    
     x = (amount_behind*(nums_length-1))//(nums_length-2)
+    remainder = (amount_behind*(nums_length-1)) %(nums_length-2) 
     cost_2_factor = x * cost2
-    cost_1_factor = (amount_behind*(nums_length-1)) %(nums_length-2) * cost1
-    return cost_1_factor + cost_2_factor
+    cost_1_factor = remainder * cost1
+    return min(cost_1_alone, cost_1_factor + cost_2_factor)
 
 def transform(nums_and_counts: list[tuple[int, int]], cost1: int, cost2: int) -> tuple[int, list[tuple[int, int]]]:
     if len(nums_and_counts) == 2:
@@ -114,24 +117,17 @@ def transform(nums_and_counts: list[tuple[int, int]], cost1: int, cost2: int) ->
     return (0, [])
 
 
-class Solution:
-    def minCostToEqualizeArray(self, nums: list[int], cost1: int, cost2: int) -> int:
-        if len(nums) == 1:
-            return 0
-        nums.sort()
-        if len(nums) == 2:
-            return (nums[1] - nums[0]) * cost1
-        max_value = nums[-1]
+def solve_for_target(nums: list[int], cost1: int, cost2: int, target: int, original_len: int) -> int:
 
-        increments_required = sum([max_value - n for n in nums])
+        increments_required = sum([target - n for n in nums])
         if cost1*2 <= cost2:
             return increments_required * cost1
         
-        right_index = len(nums) - 1
+        right_index = len(nums) 
         total_diff = 0
         while(True):
             right_index -= 1
-            total_diff_next = total_diff + max_value - nums[right_index]
+            total_diff_next = total_diff + target - nums[right_index]
             if total_diff_next > increments_required//2:
                 break
             total_diff = total_diff_next
@@ -145,36 +141,68 @@ class Solution:
 
         if (remainder == 0):
             values_and_counts = [(avg, left_receiver_length)]
-        elif avg+1 == max_value:
+        elif avg+1 == target:
             values_and_counts = [(avg, left_receiver_length - remainder)]
         else:
             values_and_counts = [
                 (avg, left_receiver_length - remainder),
-                (avg + 1, left_receiver_length)
+                (avg + 1, remainder)
             ]
+        
+        running_cost = total_diff * cost2
 
         if len(values_and_counts) == 1:
-            if values_and_counts[0][0] == max_value:
-                return total_diff * cost2
+            if values_and_counts[0][0] == target:
+                return running_cost
             elif values_and_counts[0][1] == 1:
-                return total_diff * cost2 + sove_with_one_item_left(
-                    max_value - values_and_counts[0][0],
-                    len(nums),
+                return running_cost  + sove_with_one_item_left(
+                    target - values_and_counts[0][0],
+                    original_len,
                     cost1,
                     cost2
                 )
             else:
-                raise Exception(f"TODO:{values_and_counts}")
+                return running_cost + solve_for_target(
+                    [values_and_counts[0][0]] * values_and_counts[0][1],
+                    cost1,
+                    cost2,
+                    target,
+                    original_len
+                )
         else:
-            if values_and_counts[1][0] == max_value:
+            if values_and_counts[1][0] == target:
                 raise Exception(f"TODO: Apply the clever formula {values_and_counts}")
             else:
+                return running_cost + solve_for_target(
+                    [
+                        *([values_and_counts[0][0]] * values_and_counts[0][1]),
+                        *([values_and_counts[1][0]] * values_and_counts[1][1]),
+                    ],
+                    cost1,
+                    cost2,
+                    target,
+                    original_len
+                )
                 raise Exception(f"Not handling this situation! {values_and_counts}")
 
 
-        running_total = 0
-        while len(values_and_counts) > 1:
-            this_total, values_and_counts = transform(values_and_counts, cost1, cost2)
-            running_total += this_total
-        return running_total
+class Solution:
+    def minCostToEqualizeArray(self, nums: list[int], cost1: int, cost2: int) -> int:
+        if len(nums) == 1:
+            return 0
+        nums.sort()
+        if len(nums) == 2:
+            return (nums[1] - nums[0]) * cost1
+        max_value = nums[-1]
+
+        def solve_with_delta(delta):
+            return solve_for_target(nums, cost1, cost2, max_value + delta, len(nums)) 
+
+        result1 = solve_with_delta(0)
+        result2 = solve_with_delta(23)
+        results = [solve_with_delta(n) for n in range(24)]
+        return min(results) % modulo
+
+
+
 

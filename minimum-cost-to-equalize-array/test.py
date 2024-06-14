@@ -5,6 +5,64 @@ from min_cost_to_equalize_array import Solution, tricky_calculation
 
 class TestSolution(unittest.TestCase):
 
+    def test_0(self):
+        sol = Solution()
+        nums = [69,19,66,69]
+        cost1 = 80
+        cost2 = 1
+        result = sol.minCostToEqualizeArray(nums, cost1, cost2)
+        self.assertEqual(152, result)   
+
+    def test_11(self):
+        sol = Solution()
+        nums = [55,52,29,11]
+        cost1 = 18
+        cost2 = 2
+        result = sol.minCostToEqualizeArray(nums, cost1, cost2)
+        self.assertEqual(118, result)        
+
+    def test_10(self):
+        sol = Solution()
+        nums = [5,5,7,8]
+        cost1 = 7
+        cost2 = 5
+        result = sol.minCostToEqualizeArray(nums, cost1, cost2)
+        self.assertEqual(22, result) 
+
+        
+
+    def test_9(self):
+        sol = Solution()
+        nums = [4,3,1,8]
+        cost1 = 5
+        cost2 = 1
+        result = sol.minCostToEqualizeArray(nums, cost1, cost2)
+        self.assertEqual(8, result) 
+
+    def test_8(self):
+        sol = Solution()
+        nums = [10,9,45]
+        cost1 = 31
+        cost2 = 8
+        result = sol.minCostToEqualizeArray(nums, cost1, cost2)
+        self.assertEqual(296, result)
+
+    def test_7(self):
+        sol = Solution()
+        nums = [44,17,2]
+        cost1 = 10
+        cost2 = 7
+        result = sol.minCostToEqualizeArray(nums, cost1, cost2)
+        self.assertEqual(339, result)
+
+    def test_6(self):
+        sol = Solution()
+        nums = [3,9,1]
+        cost1 = 5
+        cost2 = 7
+        result = sol.minCostToEqualizeArray(nums, cost1, cost2)
+        self.assertEqual(52, result)
+
     def test_4(self):
         sol = Solution()
         nums = [6,8,8]
@@ -22,7 +80,7 @@ class TestSolution(unittest.TestCase):
         result = sol.minCostToEqualizeArray(nums, cost1, cost2)
         self.assertEqual(15, result)
 
-    def test_0(self):
+    def test_5(self):
         sol = Solution()
         nums = [2,3,3,3,5]
         cost1 = 2
