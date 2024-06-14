@@ -22,7 +22,7 @@ class TestSolution(unittest.TestCase):
         result = sol.minCostToEqualizeArray(nums, cost1, cost2)
         self.assertEqual(15, result)
 
-    def test_2(self):
+    def test_0(self):
         sol = Solution()
         nums = [2,3,3,3,5]
         cost1 = 2
@@ -38,7 +38,12 @@ class TestSolution(unittest.TestCase):
         result = sol.minCostToEqualizeArray(nums, cost1, cost2)
         self.assertEqual(4, result)
 
-    def test_0(self):
+    # [3] and [0]: nums = [2,14,15,15], cost = 1
+    # [2] and [0]: nums = [3,15,15,15], cost = 2
+    # Three Moves  nums = [6,16,16,16], cost = 5
+    # Fifteen Moves nums = [21,21,21,21] cost = 20
+
+    def test_2(self):
         sol = Solution()
         nums = [1,14,14,15]
         cost1 = 2
