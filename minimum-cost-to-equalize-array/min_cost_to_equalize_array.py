@@ -50,78 +50,40 @@ def merge(l: list[tuple[int, int]]) -> list[tuple[int, int]]:
 # amount_behind(nums_length-1) = x(nums_length-2)
 # amount_behind(nums_length-1)/(nums_length-2) = x
 
-def sove_with_one_item_left(amount_behind, nums_length, cost1, cost2) -> int:
+class solve_with_one_item_left_result:
+
+    def __init__(self, single_increments, double_increments, total_cost):
+        self.single_increments = single_increments
+        self.double_increments = double_increments
+        self.total_cost = total_cost
+        self.total_increments = single_increments + double_increments
+
+
+def sove_with_one_item_left(amount_behind, nums_length, cost1, cost2) -> solve_with_one_item_left_result:
     cost_1_alone = amount_behind * cost1
+    result_just_cost1 = solve_with_one_item_left_result(amount_behind, 0, cost_1_alone)
     if cost1 <= cost2:
-        return cost_1_alone
+        return result_just_cost1
     
     x = (amount_behind*(nums_length-1))//(nums_length-2)
     remainder = (amount_behind*(nums_length-1)) %(nums_length-2) 
     cost_2_factor = x * cost2
     cost_1_factor = remainder * cost1
-    return min(cost_1_alone, cost_1_factor + cost_2_factor)
+    result_two_costs = solve_with_one_item_left_result(remainder, x, cost_2_factor + cost_1_factor)
 
-def transform(nums_and_counts: list[tuple[int, int]], cost1: int, cost2: int) -> tuple[int, list[tuple[int, int]]]:
-    if len(nums_and_counts) == 2:
-        left_num, left_count = nums_and_counts[0]
-        right_num, right_count = nums_and_counts[1]
-        if left_count > 1:
-            total_increments_required = (right_num - left_num) * left_count
-            double_additions = total_increments_required - total_increments_required % 2
-            left_with_doubles = add(left_num, left_count, double_additions)
-            return [double_additions * cost2, merge([*left_with_doubles, nums_and_counts[1]])]
-        else:
-            # THIS IS THE SPECIAL FORMULA
-            m = right_num - left_num
-            n = right_count
-            x = (m*n)//(n-1)
-            if (x == 0):
-                raise Exception("TODO")
-            else:
-                left_num += x
-                right_num += x//n
-                if left_num == right_num:
-                    return (x * cost2, [(left_num, left_count + right_count)])
-                else:
-                    raise Exception("TODO") 
-    elif len(nums_and_counts) == 3:
-        left_num, left_count = nums_and_counts[0]
-        right_num, right_count = nums_and_counts[1]
-        last_num, last_count = nums_and_counts[2]
-        available = (last_num - right_num) * right_count
-        required = (last_num - left_num) * left_count
-        if (available < required) and left_count == 1:
-            return (
-                cost2 * available,
-                [
-                    (left_num + available, left_count),
-                    (last_num, last_count + right_count)    
-                ]
-            )
-        elif (available == required):
-            raise Exception(f"TODO: {nums_and_counts}")
-        elif (available > required):
-            split_result = add(*nums_and_counts[1], required)
-            return (
-                cost2 * required,
-                [
-                    *split_result,
-                    (last_num, last_count + left_count)
-                ]
-            )
-            raise Exception(f"TODO: {nums_and_counts}")
-        else:
-            raise Exception(f"TODO: {nums_and_counts}")
-    else:
-        raise Exception("todo")
-    return (0, [])
+    return result_just_cost1 if result_just_cost1.total_cost <= result_two_costs.total_cost else result_two_costs
 
+class solve_for_target_result:
+    def __init__(self, cost, actual_target):
+        self.cost = cost
+        self.actual_target = actual_target
 
-def solve_for_target(nums: list[int], cost1: int, cost2: int, target: int, original_len: int) -> int:
-
+def solve_for_target(nums: list[int], cost1: int, cost2: int, target: int, original_len: int) -> solve_for_target_result:
         increments_required = sum([target - n for n in nums])
         if cost1*2 <= cost2:
-            return increments_required * cost1
+            return solve_for_target_result(increments_required * cost1, target)
+        if increments_required == 0:
+            return solve_for_target_result(0, target)
         
         right_index = len(nums) 
         total_diff = 0
@@ -152,38 +114,54 @@ def solve_for_target(nums: list[int], cost1: int, cost2: int, target: int, origi
         running_cost = total_diff * cost2
 
         if len(values_and_counts) == 1:
-            if values_and_counts[0][0] == target:
-                return running_cost
-            elif values_and_counts[0][1] == 1:
-                return running_cost  + sove_with_one_item_left(
-                    target - values_and_counts[0][0],
+            v, c = values_and_counts[0]
+            if v == target:
+                return solve_for_target_result(
+                    running_cost,
+                    target
+                )
+            elif c == 1:
+                s_result = sove_with_one_item_left(
+                    target - v,
                     original_len,
                     cost1,
                     cost2
                 )
+                return solve_for_target_result(
+                    running_cost + s_result.total_cost, 
+                    s_result.total_increments + v
+                )
             else:
-                return running_cost + solve_for_target(
-                    [values_and_counts[0][0]] * values_and_counts[0][1],
+                sub_result = solve_for_target(
+                    [v] * c,
                     cost1,
                     cost2,
                     target,
                     original_len
+                )
+                return solve_for_target_result(
+                    running_cost + sub_result.cost,
+                    sub_result.actual_target
                 )
         else:
             if values_and_counts[1][0] == target:
                 raise Exception(f"TODO: Apply the clever formula {values_and_counts}")
             else:
-                return running_cost + solve_for_target(
-                    [
-                        *([values_and_counts[0][0]] * values_and_counts[0][1]),
-                        *([values_and_counts[1][0]] * values_and_counts[1][1]),
-                    ],
+                remaining_sequence = [
+                    *([values_and_counts[0][0]] * values_and_counts[0][1]),
+                    *([values_and_counts[1][0]] * values_and_counts[1][1]),
+                ]
+                s_result = solve_for_target(
+                    remaining_sequence,
                     cost1,
                     cost2,
                     target,
                     original_len
                 )
-                raise Exception(f"Not handling this situation! {values_and_counts}")
+                return solve_for_target_result(
+                    running_cost + s_result.cost, 
+                    s_result.actual_target
+                )
 
 
 class Solution:
@@ -192,16 +170,16 @@ class Solution:
             return 0
         nums.sort()
         if len(nums) == 2:
-            return (nums[1] - nums[0]) * cost1
+            return (nums[1] - nums[0]) * cost1 % modulo
         max_value = nums[-1]
 
         def solve_with_delta(delta):
-            return solve_for_target(nums, cost1, cost2, max_value + delta, len(nums)) 
+            return solve_for_target(nums, cost1, cost2, max_value + delta, len(nums)).cost
 
-        result1 = solve_with_delta(0)
-        result2 = solve_with_delta(23)
-        results = [solve_with_delta(n) for n in range(24)]
-        return min(results) % modulo
+        results = [solve_with_delta(n) for n in range(9809)]
+        min_result = min(results)
+        min_result_modded = min_result % modulo
+        return min_result_modded
 
 
 

@@ -5,7 +5,41 @@ from min_cost_to_equalize_array import Solution, tricky_calculation
 
 class TestSolution(unittest.TestCase):
 
-    def test_0(self):
+
+    def test_00(self):
+        sol = Solution()
+        nums = [47,14,36,99,128,200,151,132,151,180,13,38,135,2,140,78,58,109,53,39,149,133,163,42,154,139,89,5,81,143,109,183,62]
+        cost1 = 23
+        cost2 = 20
+        result = sol.minCostToEqualizeArray(nums, cost1, cost2)
+        self.assertEqual(33463, result) 
+
+    def test_15(self):
+        sol = Solution()
+        nums = [72678,82695,281,29915]
+        cost1 = 858
+        cost2 = 456
+        result = sol.minCostToEqualizeArray(nums, cost1, cost2)
+        self.assertEqual(42053634, result) 
+
+    def test_14(self):
+        sol = Solution()
+        nums = [1,1000000]
+        cost1 = 1000000
+        cost2 = 2
+        result = sol.minCostToEqualizeArray(nums, cost1, cost2)
+        self.assertEqual(998993007, result) 
+
+    def test_13(self):
+        sol = Solution()
+        nums = [1,1,1,1,1,1]
+        cost1 = 1000000
+        cost2 = 1000000
+        result = sol.minCostToEqualizeArray(nums, cost1, cost2)
+        self.assertEqual(0, result)   
+
+
+    def test_12(self):
         sol = Solution()
         nums = [69,19,66,69]
         cost1 = 80
