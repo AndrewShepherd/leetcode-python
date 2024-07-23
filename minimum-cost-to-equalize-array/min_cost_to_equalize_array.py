@@ -1,89 +1,14 @@
 from collections import Counter, defaultdict
+import math
 
 modulo = 10**9 + 7
 
-def tricky_calculation(distance_behind, quantity, cost1, cost2):
-    if quantity == 2:
-        return distance_behind * cost1
-
-    x = distance_behind // (quantity - 2)
-    result = x * cost2
-    target = distance_behind + x
-    lowest_value = x * (quantity-2)
-    result = x*cost2 + (target-lowest_value)*cost1
-    return min(result, distance_behind * cost1)
-
-
-def calculate_cost(target, nums, cost1, cost2):
-    running_total = 0
-    left_over = target
-    for n in nums:
-        left_over, n = max(left_over,n), min(left_over,n)
-        running_total += (target - left_over) * cost2
-        left_over = n + target - left_over
-    return running_total + (target - n) * cost1
-
-
-def add(n, q, amount):
-    if amount % q == 0:
-        return [((n + amount // q), q)]
-    else:
-        total = n*q + amount
-        average = total // q
-        left_over = total % q
-        return [
-            (average, q-left_over),
-            (average + 1, left_over)
-        ]
-    
-def merge(l: list[tuple[int, int]]) -> list[tuple[int, int]]:
-    d = defaultdict(lambda:0)
-    for n, q in l:
-        d[n] += q
-    return sorted(d.items())
-
-
-# x/(nums_length-1) + amount_behind = x
-# amount_behind = x - x/(nums_length-1)
-# amount_behind(nums_length-1) = x(nums_length-1) - x
-# amound_behind(nums_length-1) = x(nums_length-1 - 1)
-# amount_behind(nums_length-1) = x(nums_length-2)
-# amount_behind(nums_length-1)/(nums_length-2) = x
-
-class solve_with_one_item_left_result:
-
-    def __init__(self, single_increments, double_increments, total_cost):
-        self.single_increments = single_increments
-        self.double_increments = double_increments
-        self.total_cost = total_cost
-        self.total_increments = single_increments + double_increments
-
-
-def sove_with_one_item_left(amount_behind, nums_length, cost1, cost2) -> solve_with_one_item_left_result:
-    cost_1_alone = amount_behind * cost1
-    result_just_cost1 = solve_with_one_item_left_result(amount_behind, 0, cost_1_alone)
-    if cost1 <= cost2:
-        return result_just_cost1
-    
-    x = (amount_behind*(nums_length-1))//(nums_length-2)
-    remainder = (amount_behind*(nums_length-1)) %(nums_length-2) 
-    cost_2_factor = x * cost2
-    cost_1_factor = remainder * cost1
-    result_two_costs = solve_with_one_item_left_result(remainder, x, cost_2_factor + cost_1_factor)
-
-    return result_just_cost1 if result_just_cost1.total_cost <= result_two_costs.total_cost else result_two_costs
-
-class solve_for_target_result:
-    def __init__(self, cost, actual_target):
-        self.cost = cost
-        self.actual_target = actual_target
-
-def solve_for_target(nums: list[int], cost1: int, cost2: int, target: int, original_len: int) -> solve_for_target_result:
+def solve_for_target(nums: list[int], cost1: int, cost2: int, target: int, original_len: int) -> int:
         increments_required = sum([target - n for n in nums])
         if cost1*2 <= cost2:
-            return solve_for_target_result(increments_required * cost1, target)
+            return increments_required * cost1
         if increments_required == 0:
-            return solve_for_target_result(0, target)
+            return 0
         
         right_index = len(nums) 
         total_diff = 0
@@ -115,22 +40,8 @@ def solve_for_target(nums: list[int], cost1: int, cost2: int, target: int, origi
 
         if len(values_and_counts) == 1:
             v, c = values_and_counts[0]
-            if v == target:
-                return solve_for_target_result(
-                    running_cost,
-                    target
-                )
-            elif c == 1:
-                s_result = sove_with_one_item_left(
-                    target - v,
-                    original_len,
-                    cost1,
-                    cost2
-                )
-                return solve_for_target_result(
-                    running_cost + s_result.total_cost, 
-                    s_result.total_increments + v
-                )
+            if c == 1:
+                return running_cost + (target-v) * cost1
             else:
                 sub_result = solve_for_target(
                     [v] * c,
@@ -139,30 +50,26 @@ def solve_for_target(nums: list[int], cost1: int, cost2: int, target: int, origi
                     target,
                     original_len
                 )
-                return solve_for_target_result(
-                    running_cost + sub_result.cost,
-                    sub_result.actual_target
-                )
+                return running_cost + sub_result
         else:
-            if values_and_counts[1][0] == target:
-                raise Exception(f"TODO: Apply the clever formula {values_and_counts}")
-            else:
-                remaining_sequence = [
-                    *([values_and_counts[0][0]] * values_and_counts[0][1]),
-                    *([values_and_counts[1][0]] * values_and_counts[1][1]),
-                ]
-                s_result = solve_for_target(
-                    remaining_sequence,
-                    cost1,
-                    cost2,
-                    target,
-                    original_len
-                )
-                return solve_for_target_result(
-                    running_cost + s_result.cost, 
-                    s_result.actual_target
-                )
+            remaining_sequence = [
+                *([values_and_counts[0][0]] * values_and_counts[0][1]),
+                *([values_and_counts[1][0]] * values_and_counts[1][1]),
+            ]
+            s_result = solve_for_target(
+                remaining_sequence,
+                cost1,
+                cost2,
+                target,
+                original_len
+            )
+            return running_cost + s_result
+            
 
+def get_ceiling_target(max_score: int, nums_sum: int, nums_len: int, cost2: int) -> int:
+    available_double_increments = math.ceil(max_score / cost2)
+    new_sum = nums_sum + available_double_increments * 2
+    return math.ceil(new_sum / nums_len)
 
 class Solution:
     def minCostToEqualizeArray(self, nums: list[int], cost1: int, cost2: int) -> int:
@@ -172,14 +79,26 @@ class Solution:
         if len(nums) == 2:
             return (nums[1] - nums[0]) * cost1 % modulo
         max_value = nums[-1]
+        nums_sum = sum(nums)
+        if cost1*2 <= cost2:
+            return (max_value * len(nums) - nums_sum) * cost1 % modulo
 
-        def solve_with_delta(delta):
-            return solve_for_target(nums, cost1, cost2, max_value + delta, len(nums)).cost
+        best_result_so_far = solve_for_target(nums, cost1, cost2, max_value, len(nums))
+        ceiling_target = get_ceiling_target(best_result_so_far, nums_sum, len(nums), cost2)
+        next_target = max_value
+        while True:
+            next_target += 1
+            if next_target > ceiling_target:
+                break
+            current_result = solve_for_target(nums, cost1, cost2, next_target, len(nums))
+            if current_result >= best_result_so_far:
+                print(f'increments = {next_target-max_value-1}\n')
+                break
+            best_result_so_far = current_result
+            ceiling_target = get_ceiling_target(best_result_so_far, nums_sum, len(nums), cost2)
 
-        results = [solve_with_delta(n) for n in range(9809)]
-        min_result = min(results)
-        min_result_modded = min_result % modulo
-        return min_result_modded
+        return best_result_so_far % modulo
+
 
 
 
