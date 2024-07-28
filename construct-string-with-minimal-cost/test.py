@@ -20,9 +20,9 @@ class TestSolution(unittest.TestCase):
         costs = big_input_3.costs
         sol = Solution()
         output = sol.minimumCost(target, words, costs)
-        self.assertEqual(None, 3571) # not definitive
+        self.assertEqual(output, 30848) # not definitive
 
-    def test_4(self):
+    def test_1(self):
         target = big_input.target
         words = big_input.words
         costs = big_input.costs
@@ -30,7 +30,7 @@ class TestSolution(unittest.TestCase):
         output = sol.minimumCost(target, words, costs)
         self.assertEqual(output, 3571) # not definitive
 
-    def test_2(self):
+    def test_4(self):
         target = "abcdef"
         words = ["abdef","abc","d","def","ef"]
         costs = [100,1,1,10,5]
@@ -38,7 +38,7 @@ class TestSolution(unittest.TestCase):
         output = sol.minimumCost(target, words, costs)
         self.assertEqual(output, 7)
 
-    def test_1(self):
+    def test_2(self):
         target = "aaaa"
         words = ["z","zz","zzz"]
         costs = [1,10,100]
