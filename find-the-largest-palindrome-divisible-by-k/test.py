@@ -4,7 +4,14 @@ from find_the_largest_palindrome import Solution
 
 class TestSolution(unittest.TestCase):
 
-    def test_0(self):
+    def test_2(self):
+        n = 7
+        k = 13
+        sol = Solution()
+        output = sol.largestPalindrome(n, k)
+        self.assertEqual(output, '9995999')
+
+    def test_4(self):
         n = 15
         k = 8
         sol = Solution()
@@ -39,7 +46,7 @@ class TestSolution(unittest.TestCase):
         output = sol.largestPalindrome(n, k)
         self.assertEqual(output, "8999999999999998999999999999998")
 
-    def test_10(self):
+    def test_06(self):
         n = 16
         k = 4
         sol = Solution()
@@ -60,7 +67,7 @@ class TestSolution(unittest.TestCase):
         output = sol.largestPalindrome(n, k)
         self.assertEqual(output, "595")
 
-    def test_2(self):
+    def test_01(self):
         n = 1
         k = 4
         sol = Solution()
@@ -95,12 +102,42 @@ class TestSolution(unittest.TestCase):
         output = sol.largestPalindrome(n, k)
         self.assertEqual(output, "959")
 
-    def test_6(self):
+    def test_14(self):
         n = 11
         k = 8
         sol = Solution()
         output = sol.largestPalindrome(n, k)
         self.assertEqual(output, '88899999888')
+
+    def test_15(self):
+        n = 5
+        k = 8
+        sol = Solution()
+        output = sol.largestPalindrome(n, k)
+        self.assertEqual(output, '88888')
+
+    def test_16(self):
+        n = 12
+        k = 17
+        sol = Solution()
+        output = sol.largestPalindrome(n, k)
+        self.assertEqual(output, '999982289999')
+
+    def test_17(self):
+        n = 3
+        k = 53
+        sol = Solution()
+        output = sol.largestPalindrome(n, k)
+        self.assertEqual(output, '999982289999')
+
+
+    def test_00(self):
+        n = 5
+        k = 541
+        sol = Solution()
+        output = sol.largestPalindrome(n, k)
+        self.assertEqual(output, '39493')
+
 
 
 
