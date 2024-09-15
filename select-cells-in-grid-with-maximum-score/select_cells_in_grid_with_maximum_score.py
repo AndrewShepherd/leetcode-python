@@ -46,14 +46,6 @@ def solve_recursively(rows: list[list[int]], available_additions):
             result += appearing_in_all[0]
             rows = remove_value(rows, appearing_in_all[0])
             continue
-        # Does the largest value appear in just one list? If so, take it! (No decision branch)
-        if len(l[0][1]) == 1:
-            value, rows_it_appears_in = l[0]
-            result += value
-            available_additions -= 1
-            rows = remove_row_and_value(rows, rows_it_appears_in[0], value)
-            continue
-        # If we got here then we have to do recursive backtracking
         top_value = l[0][0]
         best_result = 0
         for row in l[0][1]:

@@ -1,22 +1,43 @@
+import math
+
 class Solution:
     def numberOfSubstrings(self, s: str) -> int:
-        zeros = [0] * len(s)
-        ones = [0] * len(s)
-        for i,c in enumerate(s):
-            l,o = (zeros, ones) if c == '0' else (ones, zeros)
-            l[i] = 1 if i == 0 else l[i-1] + 1
-            o[i] = 0 if i == 0 else o[i-1]
-            
 
-        # O(n^2) solution
-        c = 0
-        for i in range(len(zeros)):
-            total_zeros = zeros[i]
-            total_ones = ones[i]
-            if (total_ones >= total_zeros * total_zeros):
-                c += 1
-            for j in range(0, i):
-                if total_ones - ones[j] >= (total_zeros - zeros[j])**2:
-                    c += 1                
-        return c
-        
+        total = 0
+        all_zero_indexes = []
+        continuous_ones_start = 0
+        for i,c in enumerate(s):
+            if c == '0':
+                all_zero_indexes.append(i)
+                continuous_ones = i - continuous_ones_start
+                total += continuous_ones * (continuous_ones + 1) // 2
+                continuous_ones_start = i + 1
+        if (all_zero_indexes):
+            continuous_ones = len(s) - all_zero_indexes[-1] - 1
+        else:
+            continuous_ones = len(s)
+        total += continuous_ones * (continuous_ones + 1) // 2
+        zero_counts = len(all_zero_indexes)
+        zero_limit = min(zero_counts, math.floor(math.sqrt(len(s))))
+
+        for z in range(1, zero_limit + 1):
+            required_one_count = z*z
+            base_required_window_size = z + required_one_count
+
+            zero_index_range_start = 0
+            zero_index_range_end = z
+            range_start = 0
+            range_end = all_zero_indexes[zero_index_range_end-1] + 1
+            while (True):
+                this_minimum_length = max(base_required_window_size, range_end - all_zero_indexes[zero_index_range_start])
+                this_maximum_length = range_end - range_start
+                if (this_maximum_length >= this_minimum_length):
+                    total += max(this_maximum_length - this_minimum_length + 1, 0)
+                if range_end == len(s):
+                    break
+                if s[range_end] == '0':
+                    range_start = all_zero_indexes[zero_index_range_start] + 1
+                    zero_index_range_start += 1
+                    zero_index_range_end += 1
+                range_end += 1
+        return total
