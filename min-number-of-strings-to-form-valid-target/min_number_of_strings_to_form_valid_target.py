@@ -1,72 +1,49 @@
-import heapq
-from collections import defaultdict
-
-ord_a = ord('a')
-
-def to_index(c):
-    return ord(c) - ord_a
-
-class TrieNode:
-    def __init__(self):
-        self.child_nodes = [None] * 26
-        self.can_terminate = False
-    def add_substring(self, w):
-        if len(w) == 0:
-            self.can_terminate = True
+def get_lps(s: str) -> list[int]:
+    result = [0] * len(s)
+    l = 0
+    i = 1
+    while i < len(s):
+        if s[l] == s[i]:
+            l += 1
+            result[i] = l
+            i += 1
+        elif l > 0:
+            l = result[l-1]
         else:
-            first_char = w[0]
-            first_index = to_index(first_char)
-            if self.child_nodes[first_index] == None:
-                self.child_nodes[first_index] = w[1:]
-            elif type(self.child_nodes[first_index]) == type(''):
-                new_node = TrieNode()
-                new_node.add_substring(self.child_nodes[first_index])
-                new_node.add_substring(w[1:])
-                self.child_nodes[first_index] = new_node
-            else:
-                self.child_nodes[first_index].add_substring(w[1:])
+            result[i] = 0
+            i += 1
+    return result
 
-    def get_length(self, w):
-        l = 0
-        node = self
-        for i,c in enumerate(w):
-            c_index = to_index(c)
-            child_node = node.child_nodes[c_index]
+def get_backward_lengths_kmp(target, w):
+    backward_lengths = [0] * len(target)
+    lps = get_lps(w)
+    w_index = -1
+    i = 0
+    while i < len(target):
+        if w_index == len(w) - 1:
+            w_index = lps[w_index] - 1
+        elif target[i] == w[w_index+1]:
+            w_index += 1
+            backward_lengths[i] = w_index + 1
+            i += 1
+        elif (w_index != -1):
+            w_index = lps[w_index] - 1
+        else:
+            i += 1
+    return backward_lengths
 
-            if child_node == None:
-                break
-            elif type(child_node) == type(''):
-                l += 1
-                for child_node_index, word_index in zip(range(0, len(child_node)), range(i+1, len(w))):
-                    if child_node[child_node_index] == w[word_index]: 
-                        l += 1
-                    else:
-                        break
-                break
-            else:
-                node = child_node
-                l += 1
-        return l
 
 class Solution:
     def minValidStrings(self, words: list[str], target: str) -> int:
-        root_node = TrieNode()
+        backward_lengths = [0] * len(target)
         for w in words:
-            root_node.add_substring(w)
-
-        q = [(0, 0)]
-        maxes = defaultdict(lambda: len(target) + 1)
-        while(q):
-            cost, negative_index = heapq.heappop(q)
-            index = 0 - negative_index
-            l = root_node.get_length(target[index:])
-            if l == len(target) - index:
-                return cost + 1
-            if cost+1 in maxes:
-                start_index = maxes[cost+1] + 1
-            else:
-                start_index = index + 1
-            for j in range(start_index, index+1+l):
-                heapq.heappush(q, (cost + 1, 0 - j))
-                maxes[cost+1] = j
-        return -1
+            bw_2 = get_backward_lengths_kmp(target, w)
+            backward_lengths = [max(l, r) for l,r in zip(backward_lengths, bw_2)]
+        count = 0
+        index = len(backward_lengths) - 1
+        while(index >= 0):
+            if backward_lengths[index] == 0:
+                return -1
+            index -= backward_lengths[index]
+            count += 1
+        return count

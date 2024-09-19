@@ -38,6 +38,14 @@ Just going by the [array](https://leetcode.com/tag/array/) tag
 
 - [Word Pattern](https://leetcode.com/problems/word-pattern/): Maintaining and looking up two hash tables
 
+### Trie (String searching)
+
+- 
+
+### Knuth-Morris-Pratt Algorithm
+
+- [Minimum Number of Valid Strings to Form Target II](https://leetcode.com/problems/minimum-number-of-valid-strings-to-form-target-ii/description/)
+
 ### Binary Search
 
 - [First Bad Version](https://leetcode.com/problems/first-bad-version/): Probably the easiest binary search problem you can have
