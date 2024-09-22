@@ -40,11 +40,12 @@ Just going by the [array](https://leetcode.com/tag/array/) tag
 
 ### Trie (String searching)
 
-- 
+- [Minimum Number of Valid Strings to Form Target I](https://leetcode.com/problems/minimum-number-of-valid-strings-to-form-target-i/description/)
 
 ### Knuth-Morris-Pratt Algorithm
 
 - [Minimum Number of Valid Strings to Form Target II](https://leetcode.com/problems/minimum-number-of-valid-strings-to-form-target-ii/description/)
+- [Shortest Palindrome](https://leetcode.com/problems/shortest-palindrome/description/)
 
 ### Binary Search
 
