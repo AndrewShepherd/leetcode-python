@@ -3,7 +3,7 @@ import unittest
 
 class TestSolution(unittest.TestCase):
 
-    def test_00(self):
+    def test_02(self):
         nums = [1,4,2,7]
         queries = [[3,3,2],[0,1,3],[0,2,1],[0,2,2],[3,3,5],[2,3,2],[1,2,2]]
         expectedResult = 5
@@ -35,7 +35,7 @@ class TestSolution(unittest.TestCase):
         result = s.minZeroArray(nums, queries)
         self.assertEqual(expectedResult, result)
 
-    def test_01(self):
+    def test_02(self):
         nums = [4,3,2,1]
         queries = [[1,3,2],[0,2,1]]
         expectedResult = -1
@@ -43,7 +43,7 @@ class TestSolution(unittest.TestCase):
         result = s.minZeroArray(nums, queries)
         self.assertEqual(expectedResult, result)
 
-    def test_02(self):
+    def test_00(self):
         nums = [8,4]
         queries = [[0,1,5],[1,1,5],[1,1,3],[1,1,4],[0,0,3],[1,1,4],[0,1,2],[1,1,3],[1,1,1]]
         expectedResult = 5
