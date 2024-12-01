@@ -1,61 +1,39 @@
+from math import inf
+
 class Solution:
     def minArraySum(self, nums: list[int], k: int, op1: int, op2: int) -> int:
-        nums_plus_records = [(n, True, True) for n in nums]
-        nums_plus_records.sort(reverse=True)
+        apply_op1 = lambda n: (n+1)//2
+        apply_op2 = lambda n: (n - k) if n >= k else n
+        apply_both = lambda n: min(apply_op1(apply_op2(n)), apply_op2(apply_op1(n)))
 
-        # for every item that is >= k*2, use up op1
+        make_dp = lambda : [[inf] * (op2+1) for _ in range(op1+1)]
 
-        for i,(n, can_apply_op1, can_apply_op2) in enumerate(nums_plus_records):
-            if op1 == 0:
-                break
-            if (n+1) < k*2:
-                break
-            nums_plus_records[i] = ((n+1)//2, False, can_apply_op2)
-            op1 -= 1
-
-        nums_plus_records.sort()
-
-        # for every item that is >= k and will be even after subtracting k, us up op2
-        for i,(n, can_apply_op1, can_apply_op2) in enumerate(nums_plus_records):
-            if op2 == 0:
-                break   
-            if (n < k):
-                continue
-            if (n-k) % 2 == 1:
-                continue
-            if not can_apply_op2:
-                continue
-            nums_plus_records[i] = (n-k, can_apply_op1, False)
-            op2 -= 1
-        
-        nums_plus_records.sort()
-        # for every item that is >= k, us up op2
-        for i,(n, can_apply_op1, can_apply_op2) in enumerate(nums_plus_records):
-            if op2 == 0:
-                break   
-            if not can_apply_op2:
-                continue
-            if (n < k):
-                continue
-            if not can_apply_op2:
-                continue
-            nums_plus_records[i] = (n-k, can_apply_op1, False)
-            op2 -= 1
-
-        nums_plus_records.sort(reverse = True)
-        # for every item that has not used up op1, use up op1
-    
-        for i,(n, can_apply_op1, can_apply_op2) in enumerate(nums_plus_records):
-            if op1 == 0:
-                break
-            if not can_apply_op1:
-                continue
-            nums_plus_records[i] = ((n+1)//2, False, can_apply_op2)
-            op1 -= 1
-
-
-
-
-   
-        return sum([n for n,b1,b2 in nums_plus_records])
-        
+        dp = make_dp()
+        dp[0][0] = 0
+        for n in nums:
+            transforms = [
+                (n, 0, 0),
+                (apply_op1(n), 1, 0),
+                (apply_op2(n), 0, 1),
+                (apply_both(n), 1, 1)
+            ]
+            dp2 = make_dp()
+            for row_index, row in enumerate(dp):
+                if row[0] == inf:
+                    break
+                for col_index, value in enumerate(row):
+                    if value == inf:
+                        break
+                    for t, dr, dc in transforms:
+                        target_row = row_index + dr
+                        if target_row >= len(dp):
+                            continue
+                        target_col = col_index + dc
+                        if target_col >= len(row):
+                            continue
+                        dp2[target_row][target_col] = min(
+                                dp2[target_row][target_col], 
+                                value + t
+                            )
+            dp = dp2
+        return dp[-1][-1]

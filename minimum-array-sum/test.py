@@ -3,7 +3,7 @@ import unittest
 
 class TestSolution(unittest.TestCase):
 
-    def test_01(self):
+    def test_03(self):
         nums = [2,8,3,19,3]
         k = 3
         op1 = 1
@@ -23,7 +23,7 @@ class TestSolution(unittest.TestCase):
         result = s.minArraySum(nums, k, op1, op2)
         self.assertEqual(expectedResult, result)
 
-    def test_03(self):
+    def test_01(self):
         nums = [10]
         k = 0
         op1 = 0
