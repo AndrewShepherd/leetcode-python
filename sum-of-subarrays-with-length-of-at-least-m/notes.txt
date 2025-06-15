@@ -1,0 +1,8 @@
+To solve:
+
+[1,2,-1,3,3,4]
+
+k = 2
+m = 2
+
+Solve if only one item
