@@ -1,33 +1,51 @@
 from functools import cache
+from math import inf;
 
+
+start_as_max = 0
+start_as_min = 1
+finish_partition = 2
 
 class Solution:
     def maximumScore(self, nums: list[int], k: int) -> int:
        
-        @cache 
         def best_result(range_start, range_length, available_partitions):
             if (available_partitions == 0):
                 return 0
             if range_length < 2:
                 return 0
             range_start %= len(nums)
-            max_so_far = nums[range_start]
-            min_so_far = nums[range_start]
-            biggest_range = 0
-            result =  0
-            for i in range(1, range_length):
-                index = (range_start + i) % len(nums)
-                max_so_far = max(max_so_far, nums[index])
-                min_so_far = min(min_so_far, nums[index])
-                this_range = max_so_far - min_so_far
-                if (this_range > biggest_range):
-                    biggest_range = this_range
-                    if available_partitions > 0:
-                        all_the_rest = best_result(index + 1, range_length - i - 1, available_partitions - 1)
-                        result = max(result, biggest_range + all_the_rest)
+            dp = [
+                [-inf, -inf, 0] for i in range(k)
+            ]
+            for i in range(range_length):
+                n = nums[(range_start + i)% len(nums)]
+                dp2 = [None] * k
+                for j in range(len(dp)):
+                    this_entry = dp[j]
+                    previous_entry = None if j == 0 else dp[j-1]
+                    if previous_entry == None:
+                        dp2[j] = [
+                            max(n, this_entry[start_as_max]),
+                            max(0 - n, this_entry[start_as_min]),
+                            max(
+                                this_entry[finish_partition],
+                                this_entry[start_as_max] - n,
+                                this_entry[start_as_min] + n
+                            )
+                        ]
                     else:
-                        result = biggest_range
-            return result
+                        dp2[j] = [
+                            max(previous_entry[finish_partition] + n, this_entry[start_as_max]),
+                            max(previous_entry[finish_partition] - n, this_entry[start_as_min]),
+                            max(
+                                this_entry[finish_partition],
+                                this_entry[start_as_max] - n,
+                                this_entry[start_as_min] + n
+                            )
+                        ]
+                dp = dp2
+            return max([e[finish_partition] for e in dp])
 
         result = 0
         _, max_index = max([(v,i) for i,v in enumerate(nums)])
